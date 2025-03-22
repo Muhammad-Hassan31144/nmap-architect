@@ -58,12 +58,9 @@ display_banner() {
     echo "    | \| | | | (_| |_) /--\ | (_     "
     echo "                   |                 "
     echo "====================================="
-    
-                              
-
     echo "    Welcome to Nmap Architect"
     echo "    Build Nmap Scans Like a Pro"
-    echo "============================================="
+    echo "====================================="
     echo "Type '-h' or '--help' at any time for usage info."
     echo
 }
