@@ -317,6 +317,7 @@ configure_os_detection() {
 }
 
 # Timing and Performance Menu
+# Timing and Performance Menu
 configure_timing_performance() {
     while true; do
         clear
@@ -334,15 +335,92 @@ configure_timing_performance() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
-        6) ;;
-        7) ;;
-        8) ;;
-        9) ;;
+        1)
+            prompt_input "Enter timing template (0-5): " timing
+            if [[ "$timing" =~ ^[0-5]$ ]]; then
+                nmap_args+=" -T$timing"
+                echo "Added: -T$timing"
+            else
+                echo "Error: Timing template must be a number between 0 and 5."
+            fi
+            ;;
+        2)
+            prompt_input "Enter minimum host group size: " min_hostgroup
+            prompt_input "Enter maximum host group size: " max_hostgroup
+            if [[ "$min_hostgroup" =~ ^[0-9]+$ && "$max_hostgroup" =~ ^[0-9]+$ && "$min_hostgroup" -le "$max_hostgroup" ]]; then
+                nmap_args+=" --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
+                echo "Added: --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
+            else
+                echo "Error: Host group sizes must be positive integers, and minimum must not exceed maximum."
+            fi
+            ;;
+        3)
+            prompt_input "Enter minimum parallel probes: " min_parallelism
+            prompt_input "Enter maximum parallel probes: " max_parallelism
+            if [[ "$min_parallelism" =~ ^[0-9]+$ && "$max_parallelism" =~ ^[0-9]+$ && "$min_parallelism" -le "$max_parallelism" ]]; then
+                nmap_args+=" --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
+                echo "Added: --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
+            else
+                echo "Error: Parallelism values must be positive integers, and minimum must not exceed maximum."
+            fi
+            ;;
+        4)
+            prompt_input "Enter initial RTT timeout (e.g., 30ms, 1s): " initial_rtt
+            prompt_input "Enter minimum RTT timeout (e.g., 30ms, 1s): " min_rtt
+            prompt_input "Enter maximum RTT timeout (e.g., 30ms, 1s): " max_rtt
+            if [[ "$initial_rtt" =~ ^[0-9]+(ms|s)$ && "$min_rtt" =~ ^[0-9]+(ms|s)$ && "$max_rtt" =~ ^[0-9]+(ms|s)$ ]]; then
+                nmap_args+=" --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
+                echo "Added: --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
+            else
+                echo "Error: RTT timeouts must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
+            fi
+            ;;
+        5)
+            prompt_input "Enter maximum retries: " retries
+            if [[ "$retries" =~ ^[0-9]+$ ]]; then
+                nmap_args+=" --max-retries $retries"
+                echo "Added: --max-retries $retries"
+            else
+                echo "Error: Maximum retries must be a positive integer."
+            fi
+            ;;
+        6)
+            prompt_input "Enter host timeout (e.g., 30ms, 1s): " timeout
+            if [[ "$timeout" =~ ^[0-9]+(ms|s)$ ]]; then
+                nmap_args+=" --host-timeout $timeout"
+                echo "Added: --host-timeout $timeout"
+            else
+                echo "Error: Host timeout must be a positive number followed by 'ms' or 's' (e.g., 30ms, 1s)."
+            fi
+            ;;
+        7)
+            prompt_input "Enter scan delay (e.g., 30ms, 1s): " scan_delay
+            prompt_input "Enter maximum scan delay (e.g., 30ms, 1s): " max_scan_delay
+            if [[ "$scan_delay" =~ ^[0-9]+(ms|s)$ && "$max_scan_delay" =~ ^[0-9]+(ms|s)$ ]]; then
+                nmap_args+=" --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
+                echo "Added: --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
+            else
+                echo "Error: Scan delays must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
+            fi
+            ;;
+        8)
+            prompt_input "Enter minimum packet rate: " min_rate
+            if [[ "$min_rate" =~ ^[0-9]+$ ]]; then
+                nmap_args+=" --min-rate $min_rate"
+                echo "Added: --min-rate $min_rate"
+            else
+                echo "Error: Minimum packet rate must be a positive integer."
+            fi
+            ;;
+        9)
+            prompt_input "Enter maximum packet rate: " max_rate
+            if [[ "$max_rate" =~ ^[0-9]+$ ]]; then
+                nmap_args+=" --max-rate $max_rate"
+                echo "Added: --max-rate $max_rate"
+            else
+                echo "Error: Maximum packet rate must be a positive integer."
+            fi
+            ;;
         10)
             return_to_menu
             break
@@ -357,6 +435,7 @@ configure_timing_performance() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 # Firewall/IDS Evasion Menu
 configure_firewall_evasion() {
