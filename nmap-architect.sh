@@ -109,10 +109,42 @@ configure_target_specification() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
+        1)
+            prompt_input "Enter filename containing target hosts/networks: " filename
+            if [[ -f "$filename" ]]; then
+                nmap_args+=" -iL $filename"
+                echo "Added: -iL $filename"
+            else
+                echo "Error: File '$filename' not found!"
+            fi
+            ;;
+        2)
+            prompt_input "Enter the number of random hosts to scan: " num_hosts
+            if [[ "$num_hosts" =~ ^[0-9]+$ && "$num_hosts" -gt 0 ]]; then
+                nmap_args+=" -iR $num_hosts"
+                echo "Added: -iR $num_hosts"
+            else
+                echo "Error: Number of hosts must be a positive integer."
+            fi
+            ;;
+        3)
+            prompt_input "Enter hosts/networks to exclude (comma-separated): " exclude_list
+            if [[ -n "$exclude_list" ]]; then
+                nmap_args+=" --exclude $exclude_list"
+                echo "Added: --exclude $exclude_list"
+            else
+                echo "Error: Exclude list cannot be empty."
+            fi
+            ;;
+        4)
+            prompt_input "Enter filename containing exclude list: " exclude_file
+            if [[ -f "$exclude_file" ]]; then
+                nmap_args+=" --excludefile $exclude_file"
+                echo "Added: --excludefile $exclude_file"
+            else
+                echo "Error: File '$exclude_file' not found!"
+            fi
+            ;;
         5)
             return_to_menu
             break
@@ -127,6 +159,7 @@ configure_target_specification() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 # Host Discovery Menu
 configure_host_discovery() {
