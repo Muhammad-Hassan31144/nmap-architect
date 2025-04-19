@@ -285,6 +285,7 @@ configure_port_specification() {
     done
 }
 
+
 # Service/Version Detection Menu
 configure_service_detection() {
     while true; do
@@ -299,11 +300,31 @@ configure_service_detection() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
+        1)
+            nmap_args+=" -sV"
+            echo "Added: -sV"
+            ;;
+        2)
+            prompt_input "Enter version intensity level (0 to 9): " intensity
+            if [[ "$intensity" =~ ^[0-9]$ ]]; then
+                nmap_args+=" --version-intensity $intensity"
+                echo "Added: --version-intensity $intensity"
+            else
+                echo "Error: Intensity level must be a number between 0 and 9."
+            fi
+            ;;
+        3)
+            nmap_args+=" --version-light"
+            echo "Added: --version-light"
+            ;;
+        4)
+            nmap_args+=" --version-all"
+            echo "Added: --version-all"
+            ;;
+        5)
+            nmap_args+=" --version-trace"
+            echo "Added: --version-trace"
+            ;;
         6)
             return_to_menu
             break
