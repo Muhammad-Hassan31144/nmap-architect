@@ -219,21 +219,81 @@ configure_scan_techniques() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
-        6) ;;
-        7) ;;
-        8) ;;
-        9) ;;
-        10) ;;
-        11) ;;
-        12) ;;
-        13) ;;
-        14) ;;
-        15) ;;
+        1)
+            nmap_args+=" -sS"
+            echo "Added: -sS"
+            ;;
+        2)
+            nmap_args+=" -sT"
+            echo "Added: -sT"
+            ;;
+        3)
+            nmap_args+=" -sA"
+            echo "Added: -sA"
+            ;;
+        4)
+            nmap_args+=" -sW"
+            echo "Added: -sW"
+            ;;
+        5)
+            nmap_args+=" -sM"
+            echo "Added: -sM"
+            ;;
+        6)
+            nmap_args+=" -sU"
+            echo "Added: -sU"
+            ;;
+        7)
+            nmap_args+=" -sN"
+            echo "Added: -sN"
+            ;;
+        8)
+            nmap_args+=" -sF"
+            echo "Added: -sF"
+            ;;
+        9)
+            nmap_args+=" -sX"
+            echo "Added: -sX"
+            ;;
+        10)
+            prompt_input "Enter custom TCP flags (e.g., SYN,ACK,FIN): " flags
+            if [[ -n "$flags" ]]; then
+                nmap_args+=" --scanflags $flags"
+                echo "Added: --scanflags $flags"
+            else
+                echo "Error: TCP flags cannot be empty."
+            fi
+            ;;
+        11)
+            prompt_input "Enter zombie host (format: host[:probeport]): " zombie
+            if [[ -n "$zombie" ]]; then
+                nmap_args+=" -sI $zombie"
+                echo "Added: -sI $zombie"
+            else
+                echo "Error: Zombie host cannot be empty."
+            fi
+            ;;
+        12)
+            nmap_args+=" -sY"
+            echo "Added: -sY"
+            ;;
+        13)
+            nmap_args+=" -sZ"
+            echo "Added: -sZ"
+            ;;
+        14)
+            nmap_args+=" -sO"
+            echo "Added: -sO"
+            ;;
+        15)
+            prompt_input "Enter FTP relay host: " ftp_host
+            if [[ -n "$ftp_host" ]]; then
+                nmap_args+=" -b $ftp_host"
+                echo "Added: -b $ftp_host"
+            else
+                echo "Error: FTP relay host cannot be empty."
+            fi
+            ;;
         16)
             return_to_menu
             break
@@ -248,6 +308,7 @@ configure_scan_techniques() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 # Port Specification Menu
 configure_port_specification() {
