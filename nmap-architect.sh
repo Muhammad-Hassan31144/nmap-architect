@@ -175,11 +175,78 @@ configure_host_discovery() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
+        1)
+            nmap_args+=" -sL"
+            echo "Added: -sL"
+            ;;
+        2)
+            nmap_args+=" -sn"
+            echo "Added: -sn"
+            ;;
+        3)
+            nmap_args+=" -Pn"
+            echo "Added: -Pn"
+            ;;
+        4)
+            prompt_input "Enter port list for discovery (e.g., 22,80,443): " ports
+            if [[ -n "$ports" ]]; then
+                clear
+                echo "Select discovery type for ports: $ports"
+                echo "1. TCP SYN (-PS)"
+                echo "2. TCP ACK (-PA)"
+                echo "3. UDP (-PU)"
+                echo "4. SCTP (-PY)"
+                read -p "Choose a discovery type: " type_choice
+                case $type_choice in
+                1)
+                    nmap_args+=" -PS$ports"
+                    echo "Added: -PS$ports"
+                    ;;
+                2)
+                    nmap_args+=" -PA$ports"
+                    echo "Added: -PA$ports"
+                    ;;
+                3)
+                    nmap_args+=" -PU$ports"
+                    echo "Added: -PU$ports"
+                    ;;
+                4)
+                    nmap_args+=" -PY$ports"
+                    echo "Added: -PY$ports"
+                    ;;
+                *)
+                    echo "Error: Invalid discovery type."
+                    ;;
+                esac
+            else
+                echo "Error: Port list cannot be empty."
+            fi
+            ;;
+        5)
+            clear
+            echo "Select ICMP probe type:"
+            echo "1. Echo request (-PE)"
+            echo "2. Timestamp request (-PP)"
+            echo "3. Netmask request (-PM)"
+            read -p "Choose an ICMP probe type: " icmp_choice
+            case $icmp_choice in
+            1)
+                nmap_args+=" -PE"
+                echo "Added: -PE"
+                ;;
+            2)
+                nmap_args+=" -PP"
+                echo "Added: -PP"
+                ;;
+            3)
+                nmap_args+=" -PM"
+                echo "Added: -PM"
+                ;;
+            *)
+                echo "Error: Invalid ICMP probe type."
+                ;;
+            esac
+            ;;
         6)
             return_to_menu
             break
@@ -194,6 +261,7 @@ configure_host_discovery() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 # Scan Techniques Menu
 configure_scan_techniques() {
