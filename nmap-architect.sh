@@ -500,7 +500,6 @@ configure_os_detection() {
 }
 
 # Timing and Performance Menu
-# Timing and Performance Menu
 configure_timing_performance() {
     while true; do
         clear
