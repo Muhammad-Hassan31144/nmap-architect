@@ -416,6 +416,7 @@ configure_port_specification() {
 
 
 # Service/Version Detection Menu
+
 configure_service_detection() {
     while true; do
         clear
@@ -733,19 +734,103 @@ configure_output_options() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
-        6) ;;
-        7) ;;
-        8) ;;
-        9) ;;
-        10) ;;
-        11) ;;
-        12) ;;
-        13) ;;
+        1)
+            prompt_input "Enter filename for output: " output_file
+            if [[ -n "$output_file" ]]; then
+                nmap_args+=" -oN $output_file"
+                echo "Added: -oN $output_file"
+            else
+                echo "Error: Filename cannot be empty."
+            fi
+            ;;
+        2)
+            prompt_input "Enter filename for output: " output_file
+            if [[ -n "$output_file" ]]; then
+                nmap_args+=" -oX $output_file"
+                echo "Added: -oX $output_file"
+            else
+                echo "Error: Filename cannot be empty."
+            fi
+            ;;
+        3)
+            prompt_input "Enter filename for output: " output_file
+            if [[ -n "$output_file" ]]; then
+                nmap_args+=" -oS $output_file"
+                echo "Added: -oS $output_file"
+            else
+                echo "Error: Filename cannot be empty."
+            fi
+            ;;
+        4)
+            prompt_input "Enter filename for output: " output_file
+            if [[ -n "$output_file" ]]; then
+                nmap_args+=" -oG $output_file"
+                echo "Added: -oG $output_file"
+            else
+                echo "Error: Filename cannot be empty."
+            fi
+            ;;
+        5)
+            prompt_input "Enter base filename for output: " base_file
+            if [[ -n "$base_file" ]]; then
+                nmap_args+=" -oA $base_file"
+                echo "Added: -oA $base_file"
+            else
+                echo "Error: Base filename cannot be empty."
+            fi
+            ;;
+        6)
+            prompt_input "Enter verbosity level (v for normal, vv for more): " verbosity
+            if [[ "$verbosity" == "v" || "$verbosity" == "vv" ]]; then
+                nmap_args+=" -$verbosity"
+                echo "Added: -$verbosity"
+            else
+                echo "Error: Verbosity level must be 'v' or 'vv'."
+            fi
+            ;;
+        7)
+            prompt_input "Enter debugging level (d for normal, dd for more): " debugging
+            if [[ "$debugging" == "d" || "$debugging" == "dd" ]]; then
+                nmap_args+=" -$debugging"
+                echo "Added: -$debugging"
+            else
+                echo "Error: Debugging level must be 'd' or 'dd'."
+            fi
+            ;;
+        8)
+            nmap_args+=" --packet-trace"
+            echo "Added: --packet-trace"
+            ;;
+        9)
+            nmap_args+=" --reason"
+            echo "Added: --reason"
+            ;;
+        10)
+            prompt_input "Enter stylesheet path/URL: " stylesheet
+            if [[ -n "$stylesheet" ]]; then
+                nmap_args+=" --stylesheet $stylesheet"
+                echo "Added: --stylesheet $stylesheet"
+            else
+                echo "Error: Stylesheet path/URL cannot be empty."
+            fi
+            ;;
+        11)
+            prompt_input "Enter filename to resume from: " resume_file
+            if [[ -f "$resume_file" ]]; then
+                nmap_args+=" --resume $resume_file"
+                echo "Added: --resume $resume_file"
+            else
+                echo "Error: File '$resume_file' not found!"
+            fi
+            ;;
+        12)
+            nmap_args+=" --append-output"
+            echo "Added: --append-output"
+            ;;
+        13)
+            nmap_args+=" --noninteractive"
+            echo "Added: --noninteractive"
+            ;;
         14)
             return_to_menu
             break
@@ -760,6 +845,7 @@ configure_output_options() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 # ==========================
 # SECTION: Main Menu
