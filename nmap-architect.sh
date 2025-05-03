@@ -482,9 +482,18 @@ configure_os_detection() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
+        1)
+            nmap_args+=" -O"
+            echo "Added: -O"
+            ;;
+        2)
+            nmap_args+=" --osscan-limit"
+            echo "Added: --osscan-limit"
+            ;;
+        3)
+            nmap_args+=" --osscan-guess"
+            echo "Added: --osscan-guess"
+            ;;
         4)
             return_to_menu
             break
@@ -499,6 +508,7 @@ configure_os_detection() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 # Timing and Performance Menu
 configure_timing_performance() {
