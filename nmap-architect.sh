@@ -393,12 +393,50 @@ configure_port_specification() {
         read -p "Select an option: " choice
 
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
-        6) ;;
+        1)
+            prompt_input "Enter port ranges (e.g., 22; 1-65535; U:53,111,T:21-25): " ports
+            if [[ -n "$ports" ]]; then
+                nmap_args+=" -p $ports"
+                echo "Added: -p $ports"
+            else
+                echo "Error: Port ranges cannot be empty."
+            fi
+            ;;
+        2)
+            prompt_input "Enter ports to exclude (e.g., 80,443): " exclude_ports
+            if [[ -n "$exclude_ports" ]]; then
+                nmap_args+=" --exclude-ports $exclude_ports"
+                echo "Added: --exclude-ports $exclude_ports"
+            else
+                echo "Error: Excluded ports cannot be empty."
+            fi
+            ;;
+        3)
+            nmap_args+=" -F"
+            echo "Added: -F"
+            ;;
+        4)
+            nmap_args+=" -r"
+            echo "Added: -r"
+            ;;
+        5)
+            prompt_input "Enter number of top ports to scan: " top_ports
+            if [[ "$top_ports" =~ ^[0-9]+$ && "$top_ports" -gt 0 && "$top_ports" -le 65535 ]]; then
+                nmap_args+=" --top-ports $top_ports"
+                echo "Added: --top-ports $top_ports"
+            else
+                echo "Error: Number of top ports must be a positive integer between 1 and 65535."
+            fi
+            ;;
+        6)
+            prompt_input "Enter port ratio (0.0 to 1.0): " ratio
+            if [[ "$ratio" =~ ^0\.[0-9]+$ || "$ratio" == "1.0" || "$ratio" == "0.0" ]]; then
+                nmap_args+=" --port-ratio $ratio"
+                echo "Added: --port-ratio $ratio"
+            else
+                echo "Error: Port ratio must be a decimal between 0.0 and 1.0."
+            fi
+            ;;
         7)
             return_to_menu
             break
@@ -413,6 +451,7 @@ configure_port_specification() {
         read -p "Press Enter to continue..."
     done
 }
+
 
 
 # Service/Version Detection Menu
