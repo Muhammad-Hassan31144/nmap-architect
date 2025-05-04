@@ -1192,12 +1192,20 @@ main() {
             ;;
         11)
             if [[ -z "$nmap_args" ]]; then
-                echo "No options selected yet."
+            echo "No options selected yet."
             else
                 echo "Current Nmap Command: nmap $nmap_args"
+                check_sudo
             fi
             read -p "Press Enter to continue..."
             ;;
+            # if [[ -z "$nmap_args" ]]; then
+            #     echo "No options selected yet."
+            # else
+            #     echo "Current Nmap Command: nmap $nmap_args"
+            # fi
+            # read -p "Press Enter to continue..."
+            # ;;
         12)
             show_active_options
             ;;    
