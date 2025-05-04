@@ -36,9 +36,10 @@ display_help() {
     echo "  9. Miscellaneous Options   - Additional Nmap options"
     echo " 10. Output Configuration    - Set output formats and verbosity"
     echo " 11. View Current Command    - Display the constructed Nmap command"
-    echo " 12. Reset Command          - Clear all selected options"
-    echo " 13. Run Nmap Scan         - Execute the built command"
-    echo " 14. Exit                  - Quit the tool"
+    echo " 12. View Active Options      - Show currently selected options"
+    echo " 13. Reset Command          - Clear all selected options"
+    echo " 14. Run Nmap Scan         - Execute the built command"
+    echo " 15. Exit                  - Quit the tool"
     echo
     echo "Examples:"
     echo "  1. Run the tool: $0"
