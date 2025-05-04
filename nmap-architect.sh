@@ -840,8 +840,9 @@ configure_firewall_evasion() {
 }
 
 
-# Miscellaneous Options Menu
 configure_misc_options() {
+    local misc_options=""
+    
     while true; do
         clear
         echo "Miscellaneous Options Menu:"
@@ -855,24 +856,128 @@ configure_misc_options() {
         echo "8. Print Nmap version (-V)"
         echo "9. Print help summary (-h)"
         echo "10. Go back to Main Menu"
+        echo
+        echo "Current miscellaneous options: $misc_options"
+        echo
         read -p "Select an option: " choice
-
+        
         case $choice in
-        1) ;;
-        2) ;;
-        3) ;;
-        4) ;;
-        5) ;;
-        6) ;;
-        7) ;;
-        8) ;;
-        9) ;;
+        1)
+            if [[ "$misc_options" != *"-6"* ]]; then
+                misc_options="$misc_options -6"
+                echo "IPv6 scanning enabled"
+            else
+                echo "IPv6 scanning is already enabled"
+            fi
+            ;;
+        2)
+            if [[ "$misc_options" != *"-A"* ]]; then
+                misc_options="$misc_options -A"
+                echo "Aggressive scan enabled (OS detection, version detection, script scanning, and traceroute)"
+            else
+                echo "Aggressive scan is already enabled"
+            fi
+            ;;
+        3)
+            read -p "Enter path to custom Nmap data directory: " datadir
+            if [ -d "$datadir" ]; then
+                misc_options="$misc_options --datadir \"$datadir\""
+                echo "Custom data directory set to: $datadir"
+            else
+                echo "Warning: Directory '$datadir' does not exist or is not accessible"
+                read -p "Use anyway? (y/n): " confirm
+                if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+                    misc_options="$misc_options --datadir \"$datadir\""
+                    echo "Custom data directory set to: $datadir"
+                else
+                    echo "Custom data directory not set"
+                fi
+            fi
+            ;;
+        4)
+            if [[ "$misc_options" == *"--send-ip"* ]]; then
+                echo "Warning: --send-ip option is already set. These options are mutually exclusive."
+                read -p "Replace with --send-eth? (y/n): " confirm
+                if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+                    # Remove --send-ip and add --send-eth
+                    misc_options="${misc_options/--send-ip/--send-eth}"
+                    echo "Switched to raw ethernet frames (--send-eth)"
+                else
+                    echo "No changes made"
+                fi
+            else
+                misc_options="$misc_options --send-eth"
+                echo "Raw ethernet frames enabled (--send-eth)"
+            fi
+            ;;
+        5)
+            if [[ "$misc_options" == *"--send-eth"* ]]; then
+                echo "Warning: --send-eth option is already set. These options are mutually exclusive."
+                read -p "Replace with --send-ip? (y/n): " confirm
+                if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+                    # Remove --send-eth and add --send-ip
+                    misc_options="${misc_options/--send-eth/--send-ip}"
+                    echo "Switched to raw IP packets (--send-ip)"
+                else
+                    echo "No changes made"
+                fi
+            else
+                misc_options="$misc_options --send-ip"
+                echo "Raw IP packets enabled (--send-ip)"
+            fi
+            ;;
+        6)
+            if [[ "$misc_options" == *"--unprivileged"* ]]; then
+                echo "Warning: --unprivileged option is already set. These options are mutually exclusive."
+                read -p "Replace with --privileged? (y/n): " confirm
+                if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+                    # Remove --unprivileged and add --privileged
+                    misc_options="${misc_options/--unprivileged/--privileged}"
+                    echo "Switched to privileged mode (--privileged)"
+                else
+                    echo "No changes made"
+                fi
+            else
+                misc_options="$misc_options --privileged"
+                echo "Fully privileged mode enabled (--privileged)"
+            fi
+            ;;
+        7)
+            if [[ "$misc_options" == *"--privileged"* ]]; then
+                echo "Warning: --privileged option is already set. These options are mutually exclusive."
+                read -p "Replace with --unprivileged? (y/n): " confirm
+                if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+                    # Remove --privileged and add --unprivileged
+                    misc_options="${misc_options/--privileged/--unprivileged}"
+                    echo "Switched to unprivileged mode (--unprivileged)"
+                else
+                    echo "No changes made"
+                fi
+            else
+                misc_options="$misc_options --unprivileged"
+                echo "Unprivileged mode enabled (--unprivileged)"
+            fi
+            ;;
+        8)
+            # This option doesn't get added to the final command - just print Nmap version
+            echo "Executing: nmap -V"
+            nmap -V
+            ;;
+        9)
+            # This option doesn't get added to the final command - just print help
+            echo "Executing: nmap -h"
+            nmap -h
+            ;;
         10)
+            # Save misc options to the global configuration before returning
+            SCAN_OPTIONS="$SCAN_OPTIONS $misc_options"
+            echo "Miscellaneous options saved: $misc_options"
+            echo "Returning to Main Menu..."
             return_to_menu
             break
             ;;
         "-h"|"--help")
-            display_help
+            display_help_misc
             ;;
         *)
             invalid_input
@@ -881,6 +986,8 @@ configure_misc_options() {
         read -p "Press Enter to continue..."
     done
 }
+
+
 
 # Output Options Menu
 configure_output_options() {
