@@ -1200,23 +1200,53 @@ main() {
             echo "Command reset successfully."
             read -p "Press Enter to continue..."
             ;;
+        # 13)
+        #     if [[ -z "$nmap_args" ]]; then
+        #         echo "Error: No options selected. Please configure the scan first."
+        #     else
+        #         if [[ ! "$nmap_args" =~ -iL|-iR ]]; then
+        #             prompt_input "Enter target (IP, hostname, or network): " target
+        #             if [[ -n "$target" ]]; then
+        #                 nmap_args+=" $target"
+        #             else
+        #                 echo "Error: Target cannot be empty."
+        #                 read -p "Press Enter to continue..."
+        #                 continue
+        #             fi
+        #         fi
+        #         echo "Running: nmap $nmap_args"
+        #         nmap $nmap_args
+        #         nmap_args=""
+        #     fi
+        #     read -p "Press Enter to continue..."
+        #     ;;
         13)
             if [[ -z "$nmap_args" ]]; then
                 echo "Error: No options selected. Please configure the scan first."
             else
-                if [[ ! "$nmap_args" =~ -iL|-iR ]]; then
+                # Check if target is already specified in the command
+                if [[ ! "$nmap_args" =~ -iL|--iL|-iR|--iR|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
                     prompt_input "Enter target (IP, hostname, or network): " target
                     if [[ -n "$target" ]]; then
-                        nmap_args+=" $target"
+                        final_command="nmap $nmap_args $target"
                     else
                         echo "Error: Target cannot be empty."
                         read -p "Press Enter to continue..."
                         continue
                     fi
+                else
+                    final_command="nmap $nmap_args"
                 fi
-                echo "Running: nmap $nmap_args"
-                nmap $nmap_args
-                nmap_args=""
+                
+                echo "Running: $final_command"
+                
+                # Check if sudo is needed
+                if [[ "$nmap_args" =~ -sS|-sU|-sY|-sZ|-sO|-sA|-sW|-sM|-sN|-sF|-sX|--scanflags|-O|--osscan ]]; then
+                    echo "This scan requires root privileges. Running with sudo..."
+                    sudo $final_command
+                else
+                    eval $final_command
+                fi
             fi
             read -p "Press Enter to continue..."
             ;;
