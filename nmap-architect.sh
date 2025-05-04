@@ -8,6 +8,252 @@ nmap_args=""
 # SECTION: Utility Functions
 # ==========================
 
+# # Function to display help information
+# display_help() {
+#     clear
+#     echo "---------------------------------------------------------"
+#     echo "Nmap Architect - Advanced Nmap Command Builder"
+#     echo "---------------------------------------------------------"
+#     echo
+#     echo "Usage: $0 [OPTIONS]"
+#     echo
+#     echo "Options:"
+#     echo "  -h, --help    Display this help menu and exit"
+#     echo
+#     echo "Description:"
+#     echo "  Nmap Architect is an interactive tool to build and execute complex Nmap commands."
+#     echo "  Select options from various categories to construct your scan, then run it with ease."
+#     echo
+#     echo "Main Menu Options:"
+#     echo "  1. Target Specification      - Set targets (e.g., IP, file, random hosts)"
+#     echo "  2. Host Discovery           - Configure host discovery methods"
+#     echo "  3. Scan Techniques         - Choose scan types (e.g., -sS, -sT, -sU)"
+#     echo "  4. Port Specification      - Define port ranges and scan order"
+#     echo "  5. Service/Version Detection - Detect services and versions on ports"
+#     echo "  6. OS Detection            - Identify operating systems"
+#     echo "  7. Timing and Performance  - Optimize scan timing and performance"
+#     echo "  8. Firewall/IDS Evasion    - Configure evasion techniques"
+#     echo "  9. Miscellaneous Options   - Additional Nmap options"
+#     echo " 10. Output Configuration    - Set output formats and verbosity"
+#     echo " 11. View Current Command    - Display the constructed Nmap command"
+#     echo " 12. View Active Options      - Show currently selected options"
+#     echo " 13. Reset Command          - Clear all selected options"
+#     echo " 14. Run Nmap Scan         - Execute the built command"
+#     echo " 15. Exit                  - Quit the tool"
+#     echo
+#     echo "Examples:"
+#     echo "  1. Run the tool: $0"
+#     echo "  2. View help:    $0 --help"
+#     echo "  3. Build a command like: nmap -sS -iL targets.txt"
+#     echo
+#     echo "Note: Ensure Nmap is installed before running the tool."
+#     echo "---------------------------------------------------------"
+#     exit 0
+# }
+
+# # Function to display introduction banner
+# display_banner() {
+#     clear
+#     echo "====================================="
+#     echo "    |\ | ._ _   _. ._   /\  ._ _     "
+#     echo "    | \| | | | (_| |_) /--\ | (_     "
+#     echo "                   |                 "
+#     echo "====================================="
+#     echo "    Welcome to Nmap Architect"
+#     echo "    Build Nmap Scans Like a Pro"
+#     echo "====================================="
+#     echo "Type '-h' or '--help' at any time for usage info."
+#     echo
+# }
+
+# # Function to handle invalid input
+# invalid_input() {
+#     echo "Invalid input. Please select a valid option."
+#     sleep 1
+# }
+
+# # Function to return to the main menu
+# return_to_menu() {
+#     echo "Returning to the main menu..."
+#     sleep 1
+# }
+
+# # Ensure Nmap is installed
+# check_nmap_installed() {
+#     if ! command -v nmap &> /dev/null; then
+#         echo "Error: Nmap is not installed. Please install it and rerun the script."
+#         exit 1
+#     fi
+# }
+
+# # Helper function to prompt for input
+# prompt_input() {
+#     local prompt="$1"
+#     local var_name="$2"
+#     read -p "$prompt" "$var_name"
+# }
+
+
+# Function to add an option to the nmap_args
+add_option() {
+    local option="$1"
+    local value="$2"
+    
+    # Check if the option already exists and remove it (to prevent duplicates)
+    nmap_args=$(echo "$nmap_args" | sed -E "s/$option [^ ]* /$option $value /g")
+    
+    # If the option wasn't found and replaced, add it
+    if ! echo "$nmap_args" | grep -q "$option"; then
+        nmap_args="$nmap_args $option $value"
+    fi
+    
+    # Trim extra spaces
+    nmap_args=$(echo "$nmap_args" | sed -E 's/^ +| +$//g' | sed -E 's/ +/ /g')
+    
+    echo "Added option: $option $value"
+}
+
+# Function to add a flag to the nmap_args (no value)
+add_flag() {
+    local flag="$1"
+    
+    # Check if the flag already exists
+    if ! echo "$nmap_args" | grep -q -w "$flag"; then
+        nmap_args="$nmap_args $flag"
+        # Trim extra spaces
+        nmap_args=$(echo "$nmap_args" | sed -E 's/^ +| +$//g' | sed -E 's/ +/ /g')
+        echo "Added flag: $flag"
+    else
+        echo "Flag already exists: $flag"
+    fi
+}
+
+# Function to remove an option or flag from nmap_args
+remove_option() {
+    local option="$1"
+    
+    # Remove the option and its value
+    nmap_args=$(echo "$nmap_args" | sed -E "s/$option [^ ]* / /g" | sed -E "s/$option / /g")
+    
+    # Trim extra spaces
+    nmap_args=$(echo "$nmap_args" | sed -E 's/^ +| +$//g' | sed -E 's/ +/ /g')
+    
+    echo "Removed option: $option"
+}
+
+# Array to track active scan techniques
+declare -A active_options
+
+# Function to check if an option conflicts with already selected options
+check_conflicts() {
+    local new_option="$1"
+    local category="$2"
+    local mutually_exclusive="$3" # Array of options that can't coexist in this category
+    
+    # If this is a mutually exclusive category
+    if [[ "$category" != "" ]]; then
+        # Check if we already have an option in this category
+        for option in $mutually_exclusive; do
+            if [[ "$nmap_args" =~ $option && "$option" != "$new_option" ]]; then
+                echo "Warning: $new_option conflicts with previously selected $option"
+                read -p "Do you want to replace $option with $new_option? (y/n): " confirm
+                if [[ "$confirm" == "y" ]]; then
+                    remove_option "$option"
+                    active_options["$option"]=""
+                    active_options["$new_option"]="$new_option"
+                    return 0
+                else
+                    return 1
+                fi
+            fi
+        done
+    fi
+    
+    # No conflicts found
+    active_options["$new_option"]="$new_option"
+    return 0
+}
+
+# Check if user has sudo privileges
+check_sudo() {
+    if [[ "$nmap_args" =~ -sS|-sU|-sY|-sZ|-sO|-sA|-sW|-sM|-sN|-sF|-sX|--scanflags|-O|--osscan ]]; then
+        echo "Note: The options you selected require root privileges."
+        if ! sudo -n true 2>/dev/null; then
+            echo "You'll be prompted for your password when you run the scan."
+        fi
+    fi
+}
+
+# Function to show active options
+show_active_options() {
+    clear
+    echo "================================================================="
+    echo "                   ACTIVE NMAP OPTIONS                           "
+    echo "================================================================="
+    
+    if [[ -z "$nmap_args" ]]; then
+        echo "No options are currently selected."
+    else
+        echo "Current command: nmap $nmap_args"
+        echo
+        echo "Options by category:"
+        
+        # Display all active options grouped by category
+        # Target Specification
+        if [[ "$nmap_args" =~ -iL|--iL|-iR|--iR|--exclude|--excludefile ]]; then
+            echo "- Target Specification: $(echo "$nmap_args" | grep -o '\-iL [^ ]*\|\-\-iL [^ ]*\|\-iR [^ ]*\|\-\-iR [^ ]*\|\-\-exclude [^ ]*\|\-\-excludefile [^ ]*')"
+        fi
+        
+        # Host Discovery
+        if [[ "$nmap_args" =~ -sL|-sn|-Pn|-PS|-PA|-PU|-PY|-PE|-PP|-PM ]]; then
+            echo "- Host Discovery: $(echo "$nmap_args" | grep -o '\-sL\|\-sn\|\-Pn\|\-PS[^ ]*\|\-PA[^ ]*\|\-PU[^ ]*\|\-PY[^ ]*\|\-PE\|\-PP\|\-PM')"
+        fi
+        
+        # Scan Techniques
+        if [[ "$nmap_args" =~ -sS|-sT|-sA|-sW|-sM|-sU|-sN|-sF|-sX|--scanflags|-sI|-sY|-sZ|-sO|-b ]]; then
+            echo "- Scan Techniques: $(echo "$nmap_args" | grep -o '\-sS\|\-sT\|\-sA\|\-sW\|\-sM\|\-sU\|\-sN\|\-sF\|\-sX\|\-\-scanflags [^ ]*\|\-sI [^ ]*\|\-sY\|\-sZ\|\-sO\|\-b [^ ]*')"
+        fi
+        
+        # Port Specification
+        if [[ "$nmap_args" =~ -p|--exclude-ports|-F|-r|--top-ports|--port-ratio ]]; then
+            echo "- Port Specification: $(echo "$nmap_args" | grep -o '\-p [^ ]*\|\-\-exclude-ports [^ ]*\|\-F\|\-r\|\-\-top-ports [^ ]*\|\-\-port-ratio [^ ]*')"
+        fi
+        
+        # Service/Version Detection
+        if [[ "$nmap_args" =~ -sV|--version-intensity|--version-light|--version-all|--version-trace ]]; then
+            echo "- Service Detection: $(echo "$nmap_args" | grep -o '\-sV\|\-\-version-intensity [^ ]*\|\-\-version-light\|\-\-version-all\|\-\-version-trace')"
+        fi
+        
+        # OS Detection
+        if [[ "$nmap_args" =~ -O|--osscan-limit|--osscan-guess ]]; then
+            echo "- OS Detection: $(echo "$nmap_args" | grep -o '\-O\|\-\-osscan-limit\|\-\-osscan-guess')"
+        fi
+        
+        # Timing and Performance
+        if [[ "$nmap_args" =~ -T|-T[0-5]|--min-hostgroup|--max-hostgroup|--min-parallelism|--max-parallelism|--min-rtt-timeout|--max-rtt-timeout|--initial-rtt-timeout|--max-retries|--host-timeout|--scan-delay|--max-scan-delay|--min-rate|--max-rate ]]; then
+            echo "- Timing and Performance: $(echo "$nmap_args" | grep -o '\-T[0-5]\|\-\-min-hostgroup [^ ]*\|\-\-max-hostgroup [^ ]*\|\-\-min-parallelism [^ ]*\|\-\-max-parallelism [^ ]*\|\-\-min-rtt-timeout [^ ]*\|\-\-max-rtt-timeout [^ ]*\|\-\-initial-rtt-timeout [^ ]*\|\-\-max-retries [^ ]*\|\-\-host-timeout [^ ]*\|\-\-scan-delay [^ ]*\|\-\-max-scan-delay [^ ]*\|\-\-min-rate [^ ]*\|\-\-max-rate [^ ]*')"
+        fi
+        
+        # Firewall/IDS Evasion
+        if [[ "$nmap_args" =~ --mtu|-D|-S|-e|-g|--source-port|--proxies|--data|--data-string|--data-length|--ip-options|--ttl|--spoof-mac|--badsum ]]; then
+            echo "- Firewall/IDS Evasion: $(echo "$nmap_args" | grep -o '\-\-mtu [^ ]*\|\-D [^ ]*\|\-S [^ ]*\|\-e [^ ]*\|\-g [^ ]*\|\-\-source-port [^ ]*\|\-\-proxies [^ ]*\|\-\-data [^ ]*\|\-\-data-string [^ ]*\|\-\-data-length [^ ]*\|\-\-ip-options [^ ]*\|\-\-ttl [^ ]*\|\-\-spoof-mac [^ ]*\|\-\-badsum')"
+        fi
+        
+        # Output Options
+        if [[ "$nmap_args" =~ -oN|-oX|-oS|-oG|-oA|-v|-vv|-d|-dd|--packet-trace|--reason|--stylesheet|--resume|--append-output|--noninteractive ]]; then
+            echo "- Output Options: $(echo "$nmap_args" | grep -o '\-oN [^ ]*\|\-oX [^ ]*\|\-oS [^ ]*\|\-oG [^ ]*\|\-oA [^ ]*\|\-v\|\-vv\|\-d\|\-dd\|\-\-packet-trace\|\-\-reason\|\-\-stylesheet [^ ]*\|\-\-resume [^ ]*\|\-\-append-output\|\-\-noninteractive')"
+        fi
+        
+        # Misc Options
+        if [[ "$nmap_args" =~ -6|-A|--datadir|--send-eth|--send-ip|--privileged|--unprivileged|-V ]]; then
+            echo "- Misc Options: $(echo "$nmap_args" | grep -o '\-6\|\-A\|\-\-datadir [^ ]*\|\-\-send-eth\|\-\-send-ip\|\-\-privileged\|\-\-unprivileged\|\-V')"
+        fi
+    fi
+    
+    echo "================================================================="
+    read -p "Press Enter to continue..."
+}
+
 # Function to display help information
 display_help() {
     clear
@@ -55,7 +301,7 @@ display_help() {
 display_banner() {
     clear
     echo "====================================="
-    echo "    |\ | ._ _   _. ._   /\  ._ _     "
+    echo "    |\ | ._ *   *. ._   /\  ._ _     "
     echo "    | \| | | | (_| |_) /--\ | (_     "
     echo "                   |                 "
     echo "====================================="
@@ -92,6 +338,8 @@ prompt_input() {
     local var_name="$2"
     read -p "$prompt" "$var_name"
 }
+
+
 
 # ==========================
 # SECTION: Configuration Menus
