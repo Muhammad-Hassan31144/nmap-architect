@@ -1152,9 +1152,11 @@ main() {
         echo "9. Miscellaneous Options"
         echo "10. Output Configuration"
         echo "11. View Current Command"
-        echo "12. Reset Command"
-        echo "13. Run Nmap Scan"
-        echo "14. Exit"
+        echo "12. Show Active Options"
+        echo "13. Reset Command"
+        echo "14. Run Nmap Scan"
+        echo "15. Exit"
+        echo "Type '-h' or '--help' for help"
         read -p "Select an option: " main_choice
 
         case $main_choice in
@@ -1197,11 +1199,14 @@ main() {
             read -p "Press Enter to continue..."
             ;;
         12)
+            show_active_options
+            ;;    
+        13)
             nmap_args=""
             echo "Command reset successfully."
             read -p "Press Enter to continue..."
             ;;
-        # 13)
+        # 14)
         #     if [[ -z "$nmap_args" ]]; then
         #         echo "Error: No options selected. Please configure the scan first."
         #     else
@@ -1221,7 +1226,7 @@ main() {
         #     fi
         #     read -p "Press Enter to continue..."
         #     ;;
-        13)
+        14)
             if [[ -z "$nmap_args" ]]; then
                 echo "Error: No options selected. Please configure the scan first."
             else
@@ -1251,7 +1256,7 @@ main() {
             fi
             read -p "Press Enter to continue..."
             ;;
-        14)
+        15)
             echo "Exiting Nmap Architect. Goodbye!"
             exit 0
             ;;
