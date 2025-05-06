@@ -350,24 +350,34 @@ configure_target_specification() {
     while true; do
         clear
         echo "Target Specification Menu:"
-        echo "1. Input from list of hosts/networks (-iL)"
-        echo "2. Choose random targets (-iR)"
-        echo "3. Exclude hosts/networks (--exclude)"
-        echo "4. Exclude list from file (--excludefile)"
-        echo "5. Go back to Main Menu"
+        echo "1. Input single IP/hostname"
+        echo "2. Input from list of hosts/networks (-iL)"
+        echo "3. Choose random targets (-iR)"
+        echo "4. Exclude hosts/networks (--exclude)"
+        echo "5. Exclude list from file (--excludefile)"
+        echo "6. Go back to Main Menu"
         read -p "Select an option: " choice
-
         case $choice in
         1)
+            prompt_input "Enter target IP address or hostname: " target
+            if [[ -n "$target" ]]; then
+                nmap_args+=" $target"
+                echo "Added target: $target"
+            else
+                echo "Error: Target cannot be empty."
+            fi
+            ;;
+        2)
             prompt_input "Enter filename containing target hosts/networks: " filename
             if [[ -f "$filename" ]]; then
                 nmap_args+=" -iL $filename"
                 echo "Added: -iL $filename"
             else
                 echo "Error: File '$filename' not found!"
+                echo "Note: If the file is in the same directory as this script, simply use the filename (e.g., 'targets.txt')."
             fi
             ;;
-        2)
+        3)
             prompt_input "Enter the number of random hosts to scan: " num_hosts
             if [[ "$num_hosts" =~ ^[0-9]+$ && "$num_hosts" -gt 0 ]]; then
                 nmap_args+=" -iR $num_hosts"
@@ -376,7 +386,7 @@ configure_target_specification() {
                 echo "Error: Number of hosts must be a positive integer."
             fi
             ;;
-        3)
+        4)
             prompt_input "Enter hosts/networks to exclude (comma-separated): " exclude_list
             if [[ -n "$exclude_list" ]]; then
                 nmap_args+=" --exclude $exclude_list"
@@ -385,16 +395,17 @@ configure_target_specification() {
                 echo "Error: Exclude list cannot be empty."
             fi
             ;;
-        4)
+        5)
             prompt_input "Enter filename containing exclude list: " exclude_file
             if [[ -f "$exclude_file" ]]; then
                 nmap_args+=" --excludefile $exclude_file"
                 echo "Added: --excludefile $exclude_file"
             else
                 echo "Error: File '$exclude_file' not found!"
+                echo "Note: If the file is in the same directory as this script, simply use the filename (e.g., 'excludes.txt')."
             fi
             ;;
-        5)
+        6)
             return_to_menu
             break
             ;;
@@ -704,7 +715,6 @@ configure_port_specification() {
 
 
 # Service/Version Detection Menu
-
 configure_service_detection() {
     while true; do
         clear
@@ -796,7 +806,6 @@ configure_os_detection() {
         read -p "Press Enter to continue..."
     done
 }
-
 
 # Timing and Performance Menu
 configure_timing_performance() {
@@ -1236,8 +1245,6 @@ configure_misc_options() {
     done
 }
 
-
-
 # Output Options Menu
 configure_output_options() {
     while true; do
@@ -1371,7 +1378,6 @@ configure_output_options() {
         read -p "Press Enter to continue..."
     done
 }
-
 
 # ==========================
 # SECTION: Main Menu
