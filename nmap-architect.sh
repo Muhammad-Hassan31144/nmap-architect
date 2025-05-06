@@ -4,95 +4,6 @@
 # Global variable to accumulate Nmap arguments
 nmap_args=""
 
-# ==========================
-# SECTION: Utility Functions
-# ==========================
-
-# # Function to display help information
-# display_help() {
-#     clear
-#     echo "---------------------------------------------------------"
-#     echo "Nmap Architect - Advanced Nmap Command Builder"
-#     echo "---------------------------------------------------------"
-#     echo
-#     echo "Usage: $0 [OPTIONS]"
-#     echo
-#     echo "Options:"
-#     echo "  -h, --help    Display this help menu and exit"
-#     echo
-#     echo "Description:"
-#     echo "  Nmap Architect is an interactive tool to build and execute complex Nmap commands."
-#     echo "  Select options from various categories to construct your scan, then run it with ease."
-#     echo
-#     echo "Main Menu Options:"
-#     echo "  1. Target Specification      - Set targets (e.g., IP, file, random hosts)"
-#     echo "  2. Host Discovery           - Configure host discovery methods"
-#     echo "  3. Scan Techniques         - Choose scan types (e.g., -sS, -sT, -sU)"
-#     echo "  4. Port Specification      - Define port ranges and scan order"
-#     echo "  5. Service/Version Detection - Detect services and versions on ports"
-#     echo "  6. OS Detection            - Identify operating systems"
-#     echo "  7. Timing and Performance  - Optimize scan timing and performance"
-#     echo "  8. Firewall/IDS Evasion    - Configure evasion techniques"
-#     echo "  9. Miscellaneous Options   - Additional Nmap options"
-#     echo " 10. Output Configuration    - Set output formats and verbosity"
-#     echo " 11. View Current Command    - Display the constructed Nmap command"
-#     echo " 12. View Active Options      - Show currently selected options"
-#     echo " 13. Reset Command          - Clear all selected options"
-#     echo " 14. Run Nmap Scan         - Execute the built command"
-#     echo " 15. Exit                  - Quit the tool"
-#     echo
-#     echo "Examples:"
-#     echo "  1. Run the tool: $0"
-#     echo "  2. View help:    $0 --help"
-#     echo "  3. Build a command like: nmap -sS -iL targets.txt"
-#     echo
-#     echo "Note: Ensure Nmap is installed before running the tool."
-#     echo "---------------------------------------------------------"
-#     exit 0
-# }
-
-# # Function to display introduction banner
-# display_banner() {
-#     clear
-#     echo "====================================="
-#     echo "    |\ | ._ _   _. ._   /\  ._ _     "
-#     echo "    | \| | | | (_| |_) /--\ | (_     "
-#     echo "                   |                 "
-#     echo "====================================="
-#     echo "    Welcome to Nmap Architect"
-#     echo "    Build Nmap Scans Like a Pro"
-#     echo "====================================="
-#     echo "Type '-h' or '--help' at any time for usage info."
-#     echo
-# }
-
-# # Function to handle invalid input
-# invalid_input() {
-#     echo "Invalid input. Please select a valid option."
-#     sleep 1
-# }
-
-# # Function to return to the main menu
-# return_to_menu() {
-#     echo "Returning to the main menu..."
-#     sleep 1
-# }
-
-# # Ensure Nmap is installed
-# check_nmap_installed() {
-#     if ! command -v nmap &> /dev/null; then
-#         echo "Error: Nmap is not installed. Please install it and rerun the script."
-#         exit 1
-#     fi
-# }
-
-# # Helper function to prompt for input
-# prompt_input() {
-#     local prompt="$1"
-#     local var_name="$2"
-#     read -p "$prompt" "$var_name"
-# }
-
 
 # Function to add an option to the nmap_args
 add_option() {
@@ -711,8 +622,6 @@ configure_port_specification() {
         read -p "Press Enter to continue..."
     done
 }
-
-
 
 # Service/Version Detection Menu
 configure_service_detection() {
