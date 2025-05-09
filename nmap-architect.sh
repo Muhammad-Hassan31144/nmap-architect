@@ -784,59 +784,59 @@ configure_port_specification() {
     done
 }
 
-# Service/Version Detection Menu
-configure_service_detection() {
-    while true; do
-        clear
-        echo "Service/Version Detection Menu:"
-        echo "1. Probe open ports to determine service/version info (-sV)"
-        echo "2. Set version intensity level (--version-intensity)"
-        echo "3. Limit to most likely probes (light scan) (--version-light)"
-        echo "4. Try every single probe (intensity 9) (--version-all)"
-        echo "5. Show detailed version scan activity (--version-trace)"
-        echo "6. Go back to Main Menu"
-        read -p "Select an option: " choice
+# # Service/Version Detection Menu
+# configure_service_detection() {
+#     while true; do
+#         clear
+#         echo "Service/Version Detection Menu:"
+#         echo "1. Probe open ports to determine service/version info (-sV)"
+#         echo "2. Set version intensity level (--version-intensity)"
+#         echo "3. Limit to most likely probes (light scan) (--version-light)"
+#         echo "4. Try every single probe (intensity 9) (--version-all)"
+#         echo "5. Show detailed version scan activity (--version-trace)"
+#         echo "6. Go back to Main Menu"
+#         read -p "Select an option: " choice
 
-        case $choice in
-        1)
-            nmap_args+=" -sV"
-            echo "Added: -sV"
-            ;;
-        2)
-            prompt_input "Enter version intensity level (0 to 9): " intensity
-            if [[ "$intensity" =~ ^[0-9]$ ]]; then
-                nmap_args+=" --version-intensity $intensity"
-                echo "Added: --version-intensity $intensity"
-            else
-                echo "Error: Intensity level must be a number between 0 and 9."
-            fi
-            ;;
-        3)
-            nmap_args+=" --version-light"
-            echo "Added: --version-light"
-            ;;
-        4)
-            nmap_args+=" --version-all"
-            echo "Added: --version-all"
-            ;;
-        5)
-            nmap_args+=" --version-trace"
-            echo "Added: --version-trace"
-            ;;
-        6)
-            return_to_menu
-            break
-            ;;
-        "-h"|"--help")
-            display_help
-            ;;
-        *)
-            invalid_input
-            ;;
-        esac
-        read -p "Press Enter to continue..."
-    done
-}
+#         case $choice in
+#         1)
+#             nmap_args+=" -sV"
+#             echo "Added: -sV"
+#             ;;
+#         2)
+#             prompt_input "Enter version intensity level (0 to 9): " intensity
+#             if [[ "$intensity" =~ ^[0-9]$ ]]; then
+#                 nmap_args+=" --version-intensity $intensity"
+#                 echo "Added: --version-intensity $intensity"
+#             else
+#                 echo "Error: Intensity level must be a number between 0 and 9."
+#             fi
+#             ;;
+#         3)
+#             nmap_args+=" --version-light"
+#             echo "Added: --version-light"
+#             ;;
+#         4)
+#             nmap_args+=" --version-all"
+#             echo "Added: --version-all"
+#             ;;
+#         5)
+#             nmap_args+=" --version-trace"
+#             echo "Added: --version-trace"
+#             ;;
+#         6)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
 
 # OS Detection Menu
 configure_os_detection() {
@@ -997,162 +997,268 @@ configure_timing_performance() {
 }
 
 
-configure_firewall_evasion() {
-    local evasion_options=""
+# configure_firewall_evasion() {
+#     local evasion_options=""
+    
+#     while true; do
+#         clear
+#         echo "Firewall/IDS Evasion Menu:"
+#         echo "1. Fragment packets (--mtu)"
+#         echo "2. Cloak scan with decoys (-D)"
+#         echo "3. Spoof source address (-S)"
+#         echo "4. Use specified interface (-e)"
+#         echo "5. Use a specific source port (-g/--source-port)"
+#         echo "6. Relay connections through proxies (--proxies)"
+#         echo "7. Append custom payload in hex (--data)"
+#         echo "8. Append custom ASCII string (--data-string)"
+#         echo "9. Append random data (--data-length)"
+#         echo "10. Send packets with specific IP options (--ip-options)"
+#         echo "11. Set IP time-to-live (--ttl)"
+#         echo "12. Spoof MAC address (--spoof-mac)"
+#         echo "13. Use bogus checksum (--badsum)"
+#         echo "14. Go back to Main Menu"
+#         echo
+#         echo "Current evasion options: $evasion_options"
+#         echo
+#         read -p "Select an option: " choice
+        
+#         case $choice in
+#         1)
+#             read -p "Enter MTU size for packet fragmentation (8-1500): " mtu_size
+#             if [[ "$mtu_size" =~ ^[0-9]+$ ]] && [ "$mtu_size" -ge 8 ] && [ "$mtu_size" -le 1500 ]; then
+#                 evasion_options="$evasion_options --mtu $mtu_size"
+#                 echo "Packet fragmentation added with MTU size: $mtu_size"
+#             else
+#                 echo "Invalid MTU size. Must be between 8 and 1500."
+#             fi
+#             ;;
+#         2)
+#             read -p "Enter decoy IPs (comma-separated, ME for real IP position): " decoys
+#             if [ -n "$decoys" ]; then
+#                 evasion_options="$evasion_options -D $decoys"
+#                 echo "Decoy scan added with: $decoys"
+#             else
+#                 echo "No decoy IPs provided."
+#             fi
+#             ;;
+#         3)
+#             read -p "Enter IP address to spoof: " spoof_ip
+#             if [[ "$spoof_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+#                 evasion_options="$evasion_options -S $spoof_ip"
+#                 echo "Source address spoofing added with IP: $spoof_ip"
+#             else
+#                 echo "Invalid IP address format."
+#             fi
+#             ;;
+#         4)
+#             read -p "Enter network interface to use: " interface
+#             if [ -n "$interface" ]; then
+#                 evasion_options="$evasion_options -e $interface"
+#                 echo "Interface set to: $interface"
+#             else
+#                 echo "No interface provided."
+#             fi
+#             ;;
+#         5)
+#             read -p "Enter source port number (1-65535): " source_port
+#             if [[ "$source_port" =~ ^[0-9]+$ ]] && [ "$source_port" -ge 1 ] && [ "$source_port" -le 65535 ]; then
+#                 evasion_options="$evasion_options --source-port $source_port"
+#                 echo "Source port set to: $source_port"
+#             else
+#                 echo "Invalid port number. Must be between 1 and 65535."
+#             fi
+#             ;;
+#         6)
+#             read -p "Enter proxy list (comma-separated, format: proto://host:port): " proxies
+#             if [ -n "$proxies" ]; then
+#                 evasion_options="$evasion_options --proxies $proxies"
+#                 echo "Proxy chain set to: $proxies"
+#             else
+#                 echo "No proxies provided."
+#             fi
+#             ;;
+#         7)
+#             read -p "Enter custom payload in hex (e.g., DEADBEEF): " hex_data
+#             if [[ "$hex_data" =~ ^[0-9A-Fa-f]+$ ]]; then
+#                 evasion_options="$evasion_options --data 0x$hex_data"
+#                 echo "Custom hex payload added: 0x$hex_data"
+#             else
+#                 echo "Invalid hex format. Use hexadecimal characters only (0-9, A-F)."
+#             fi
+#             ;;
+#         8)
+#             read -p "Enter custom ASCII string to append: " ascii_data
+#             if [ -n "$ascii_data" ]; then
+#                 # Escape the string for command line use
+#                 ascii_data_escaped=$(printf '%q' "$ascii_data")
+#                 evasion_options="$evasion_options --data-string $ascii_data_escaped"
+#                 echo "Custom ASCII string added: $ascii_data"
+#             else
+#                 echo "No ASCII string provided."
+#             fi
+#             ;;
+#         9)
+#             read -p "Enter length of random data to append (bytes): " data_length
+#             if [[ "$data_length" =~ ^[0-9]+$ ]] && [ "$data_length" -gt 0 ]; then
+#                 evasion_options="$evasion_options --data-length $data_length"
+#                 echo "Random data length set to: $data_length bytes"
+#             else
+#                 echo "Invalid data length. Must be a positive integer."
+#             fi
+#             ;;
+#         10)
+#             echo "IP Options formats:"
+#             echo "  R: Record route"
+#             echo "  T: Timestamp"
+#             echo "  U: Route record"
+#             echo "  S addr: Loose source routing"
+#             echo "  L addr: Strict source routing"
+#             echo "  \hex: Custom hex values"
+#             read -p "Enter IP options: " ip_options
+#             if [ -n "$ip_options" ]; then
+#                 evasion_options="$evasion_options --ip-options \"$ip_options\""
+#                 echo "IP options set to: $ip_options"
+#             else
+#                 echo "No IP options provided."
+#             fi
+#             ;;
+#         11)
+#             read -p "Enter TTL value (1-255): " ttl
+#             if [[ "$ttl" =~ ^[0-9]+$ ]] && [ "$ttl" -ge 1 ] && [ "$ttl" -le 255 ]; then
+#                 evasion_options="$evasion_options --ttl $ttl"
+#                 echo "TTL value set to: $ttl"
+#             else
+#                 echo "Invalid TTL value. Must be between 1 and 255."
+#             fi
+#             ;;
+#         12)
+#             echo "MAC address options:"
+#             echo "  0: Use a random MAC address"
+#             echo "  vendor: Use a random MAC from that vendor"
+#             echo "  MAC: Use the specified MAC address"
+#             read -p "Enter MAC address option: " mac
+#             if [ -n "$mac" ]; then
+#                 evasion_options="$evasion_options --spoof-mac $mac"
+#                 echo "MAC spoofing set to: $mac"
+#             else
+#                 echo "No MAC address option provided."
+#             fi
+#             ;;
+#         13)
+#             evasion_options="$evasion_options --badsum"
+#             echo "Bogus checksum option added"
+#             ;;
+#         14)
+#             # Save evasion options to the global configuration before returning
+#             SCAN_OPTIONS="$SCAN_OPTIONS $evasion_options"
+#             echo "Firewall/IDS evasion options saved: $evasion_options"
+#             echo "Returning to Main Menu..."
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
+
+# Service/Version Detection Menu - Fixed Version
+configure_service_detection() {
+    local intensity_set=false
+    local version_set=false
     
     while true; do
         clear
-        echo "Firewall/IDS Evasion Menu:"
-        echo "1. Fragment packets (--mtu)"
-        echo "2. Cloak scan with decoys (-D)"
-        echo "3. Spoof source address (-S)"
-        echo "4. Use specified interface (-e)"
-        echo "5. Use a specific source port (-g/--source-port)"
-        echo "6. Relay connections through proxies (--proxies)"
-        echo "7. Append custom payload in hex (--data)"
-        echo "8. Append custom ASCII string (--data-string)"
-        echo "9. Append random data (--data-length)"
-        echo "10. Send packets with specific IP options (--ip-options)"
-        echo "11. Set IP time-to-live (--ttl)"
-        echo "12. Spoof MAC address (--spoof-mac)"
-        echo "13. Use bogus checksum (--badsum)"
-        echo "14. Go back to Main Menu"
+        echo "Service/Version Detection Menu:"
+        echo "1. Probe open ports to determine service/version info (-sV)"
+        echo "2. Set version intensity level (--version-intensity)"
+        echo "3. Limit to most likely probes (light scan) (--version-light)"
+        echo "4. Try every single probe (intensity 9) (--version-all)"
+        echo "5. Show detailed version scan activity (--version-trace)"
+        echo "6. Reset version detection options"
+        echo "7. Go back to Main Menu"
         echo
-        echo "Current evasion options: $evasion_options"
+        echo "Current detection options: $(filter_nmap_args '-sV|--version-')"
         echo
         read -p "Select an option: " choice
-        
+
         case $choice in
         1)
-            read -p "Enter MTU size for packet fragmentation (8-1500): " mtu_size
-            if [[ "$mtu_size" =~ ^[0-9]+$ ]] && [ "$mtu_size" -ge 8 ] && [ "$mtu_size" -le 1500 ]; then
-                evasion_options="$evasion_options --mtu $mtu_size"
-                echo "Packet fragmentation added with MTU size: $mtu_size"
+            if ! $version_set; then
+                nmap_args+=" -sV"
+                version_set=true
+                echo "Added: -sV"
             else
-                echo "Invalid MTU size. Must be between 8 and 1500."
+                echo "Notice: Version detection (-sV) is already enabled."
             fi
             ;;
         2)
-            read -p "Enter decoy IPs (comma-separated, ME for real IP position): " decoys
-            if [ -n "$decoys" ]; then
-                evasion_options="$evasion_options -D $decoys"
-                echo "Decoy scan added with: $decoys"
+            if $intensity_set; then
+                echo "Warning: This will override any previous intensity settings (--version-light, --version-all, or --version-intensity)"
+                read -p "Continue? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+                # Remove any existing intensity options
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--version-(light|all|intensity [0-9])//g' | sed 's/  / /g')
+            fi
+            
+            prompt_input "Enter version intensity level (0 to 9): " intensity
+            if [[ "$intensity" =~ ^[0-9]$ ]]; then
+                nmap_args+=" --version-intensity $intensity"
+                intensity_set=true
+                echo "Added: --version-intensity $intensity"
             else
-                echo "No decoy IPs provided."
+                echo "Error: Intensity level must be a number between 0 and 9."
             fi
             ;;
         3)
-            read -p "Enter IP address to spoof: " spoof_ip
-            if [[ "$spoof_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                evasion_options="$evasion_options -S $spoof_ip"
-                echo "Source address spoofing added with IP: $spoof_ip"
-            else
-                echo "Invalid IP address format."
+            if $intensity_set; then
+                echo "Warning: This will override any previous intensity settings (--version-intensity or --version-all)"
+                read -p "Continue? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+                # Remove any existing intensity options
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--version-(intensity [0-9]|all)//g' | sed 's/  / /g')
             fi
+            
+            nmap_args+=" --version-light"
+            intensity_set=true
+            echo "Added: --version-light (equivalent to --version-intensity 2)"
             ;;
         4)
-            read -p "Enter network interface to use: " interface
-            if [ -n "$interface" ]; then
-                evasion_options="$evasion_options -e $interface"
-                echo "Interface set to: $interface"
-            else
-                echo "No interface provided."
+            if $intensity_set; then
+                echo "Warning: This will override any previous intensity settings (--version-intensity or --version-light)"
+                read -p "Continue? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+                # Remove any existing intensity options
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--version-(intensity [0-9]|light)//g' | sed 's/  / /g')
             fi
+            
+            nmap_args+=" --version-all"
+            intensity_set=true
+            echo "Added: --version-all (equivalent to --version-intensity 9)"
             ;;
         5)
-            read -p "Enter source port number (1-65535): " source_port
-            if [[ "$source_port" =~ ^[0-9]+$ ]] && [ "$source_port" -ge 1 ] && [ "$source_port" -le 65535 ]; then
-                evasion_options="$evasion_options --source-port $source_port"
-                echo "Source port set to: $source_port"
-            else
-                echo "Invalid port number. Must be between 1 and 65535."
-            fi
+            nmap_args+=" --version-trace"
+            echo "Added: --version-trace"
             ;;
         6)
-            read -p "Enter proxy list (comma-separated, format: proto://host:port): " proxies
-            if [ -n "$proxies" ]; then
-                evasion_options="$evasion_options --proxies $proxies"
-                echo "Proxy chain set to: $proxies"
-            else
-                echo "No proxies provided."
-            fi
+            # Reset version detection options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-sV|--version-[a-z-]+ ?[0-9]*//g' | sed 's/  / /g')
+            version_set=false
+            intensity_set=false
+            echo "All version detection options have been reset."
             ;;
         7)
-            read -p "Enter custom payload in hex (e.g., DEADBEEF): " hex_data
-            if [[ "$hex_data" =~ ^[0-9A-Fa-f]+$ ]]; then
-                evasion_options="$evasion_options --data 0x$hex_data"
-                echo "Custom hex payload added: 0x$hex_data"
-            else
-                echo "Invalid hex format. Use hexadecimal characters only (0-9, A-F)."
-            fi
-            ;;
-        8)
-            read -p "Enter custom ASCII string to append: " ascii_data
-            if [ -n "$ascii_data" ]; then
-                # Escape the string for command line use
-                ascii_data_escaped=$(printf '%q' "$ascii_data")
-                evasion_options="$evasion_options --data-string $ascii_data_escaped"
-                echo "Custom ASCII string added: $ascii_data"
-            else
-                echo "No ASCII string provided."
-            fi
-            ;;
-        9)
-            read -p "Enter length of random data to append (bytes): " data_length
-            if [[ "$data_length" =~ ^[0-9]+$ ]] && [ "$data_length" -gt 0 ]; then
-                evasion_options="$evasion_options --data-length $data_length"
-                echo "Random data length set to: $data_length bytes"
-            else
-                echo "Invalid data length. Must be a positive integer."
-            fi
-            ;;
-        10)
-            echo "IP Options formats:"
-            echo "  R: Record route"
-            echo "  T: Timestamp"
-            echo "  U: Route record"
-            echo "  S addr: Loose source routing"
-            echo "  L addr: Strict source routing"
-            echo "  \hex: Custom hex values"
-            read -p "Enter IP options: " ip_options
-            if [ -n "$ip_options" ]; then
-                evasion_options="$evasion_options --ip-options \"$ip_options\""
-                echo "IP options set to: $ip_options"
-            else
-                echo "No IP options provided."
-            fi
-            ;;
-        11)
-            read -p "Enter TTL value (1-255): " ttl
-            if [[ "$ttl" =~ ^[0-9]+$ ]] && [ "$ttl" -ge 1 ] && [ "$ttl" -le 255 ]; then
-                evasion_options="$evasion_options --ttl $ttl"
-                echo "TTL value set to: $ttl"
-            else
-                echo "Invalid TTL value. Must be between 1 and 255."
-            fi
-            ;;
-        12)
-            echo "MAC address options:"
-            echo "  0: Use a random MAC address"
-            echo "  vendor: Use a random MAC from that vendor"
-            echo "  MAC: Use the specified MAC address"
-            read -p "Enter MAC address option: " mac
-            if [ -n "$mac" ]; then
-                evasion_options="$evasion_options --spoof-mac $mac"
-                echo "MAC spoofing set to: $mac"
-            else
-                echo "No MAC address option provided."
-            fi
-            ;;
-        13)
-            evasion_options="$evasion_options --badsum"
-            echo "Bogus checksum option added"
-            ;;
-        14)
-            # Save evasion options to the global configuration before returning
-            SCAN_OPTIONS="$SCAN_OPTIONS $evasion_options"
-            echo "Firewall/IDS evasion options saved: $evasion_options"
-            echo "Returning to Main Menu..."
             return_to_menu
             break
             ;;
@@ -1167,6 +1273,231 @@ configure_firewall_evasion() {
     done
 }
 
+# Helper function to filter and display current nmap arguments
+filter_nmap_args() {
+    local pattern="$1"
+    echo "$nmap_args" | grep -oE "$pattern[^ ]*" || echo "None"
+}
+
+# Improved Firewall/IDS Evasion Menu
+configure_firewall_evasion() {
+    # Use global variable to ensure options are saved even if function exits unexpectedly
+    EVASION_OPTIONS=${EVASION_OPTIONS:-""}
+    
+    while true; do
+        clear
+        echo "Firewall/IDS Evasion Menu:"
+        echo "1. Fragment packets (--mtu)"
+        echo "2. Cloak scan with decoys (-D)"
+        echo "3. Spoof source address (-S)"
+        echo "4. Use specified interface (-e)"
+        echo "5. Use a specific source port (-g/--source-port)"
+        echo "6. Relay connections through proxies (--proxies)"
+        echo "7. Append custom payload in hex (--data)"
+        echo "8. Append custom ASCII string (--data-string)"
+        echo "9. Append random data (--data-length)"
+        echo "10. Set IP time-to-live (--ttl)"
+        echo "11. Spoof MAC address (--spoof-mac)"
+        echo "12. Use bogus checksum (--badsum)"
+        echo "13. Reset evasion options"
+        echo "14. Go back to Main Menu"
+        echo
+        echo "Current evasion options: $EVASION_OPTIONS"
+        echo
+        read -p "Select an option: " choice
+        
+        case $choice in
+        1)
+            read -p "Enter MTU size for packet fragmentation (8-1500): " mtu_size
+            if [[ "$mtu_size" =~ ^[0-9]+$ ]] && [ "$mtu_size" -ge 8 ] && [ "$mtu_size" -le 1500 ]; then
+                # Check if scan type supports fragmentation
+                if [[ "$nmap_args" == *"-f"* || "$nmap_args" == *"-sS"* || "$nmap_args" == *"-sT"* || "$nmap_args" == *"-sA"* ]]; then
+                    EVASION_OPTIONS="$EVASION_OPTIONS --mtu $mtu_size"
+                    echo "Packet fragmentation added with MTU size: $mtu_size"
+                else
+                    echo "Warning: MTU option works best with -f, -sS, -sT, or -sA scan types."
+                    read -p "Add anyway? (y/n): " confirm
+                    if [[ "$confirm" == "y" ]]; then
+                        EVASION_OPTIONS="$EVASION_OPTIONS --mtu $mtu_size"
+                        echo "Packet fragmentation added with MTU size: $mtu_size"
+                    fi
+                fi
+            else
+                echo "Invalid MTU size. Must be between 8 and 1500."
+            fi
+            ;;
+        2)
+            read -p "Enter decoy IPs (comma-separated, ME for real IP position): " decoys
+            if [ -n "$decoys" ]; then
+                # Check for conflicts with -S option
+                if [[ "$EVASION_OPTIONS" == *"-S "* ]]; then
+                    echo "Warning: Decoy scanning (-D) may conflict with source address spoofing (-S)."
+                    read -p "Continue anyway? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                fi
+                EVASION_OPTIONS="$EVASION_OPTIONS -D $decoys"
+                echo "Decoy scan added with: $decoys"
+            else
+                echo "No decoy IPs provided."
+            fi
+            ;;
+        3)
+            read -p "Enter IP address to spoof: " spoof_ip
+            if [[ "$spoof_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                # Check for decoy conflicts
+                if [[ "$EVASION_OPTIONS" == *"-D "* && "$EVASION_OPTIONS" != *"ME"* ]]; then
+                    echo "Warning: Source address spoofing (-S) may conflict with decoy scanning (-D)."
+                    echo "Consider using 'ME' in your decoy list to specify the position of your real IP."
+                    read -p "Continue anyway? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                fi
+                EVASION_OPTIONS="$EVASION_OPTIONS -S $spoof_ip"
+                echo "Source address spoofing added with IP: $spoof_ip"
+            else
+                echo "Invalid IP address format."
+            fi
+            ;;
+        4)
+            read -p "Enter network interface to use: " interface
+            if [ -n "$interface" ]; then
+                EVASION_OPTIONS="$EVASION_OPTIONS -e $interface"
+                echo "Interface set to: $interface"
+            else
+                echo "No interface provided."
+            fi
+            ;;
+        5)
+            read -p "Enter source port number (1-65535): " source_port
+            if [[ "$source_port" =~ ^[0-9]+$ ]] && [ "$source_port" -ge 1 ] && [ "$source_port" -le 65535 ]; then
+                EVASION_OPTIONS="$EVASION_OPTIONS --source-port $source_port"
+                echo "Source port set to: $source_port"
+            else
+                echo "Invalid port number. Must be between 1 and 65535."
+            fi
+            ;;
+        6)
+            read -p "Enter proxy list (comma-separated, format: proto://host:port): " proxies
+            if [ -n "$proxies" ]; then
+                EVASION_OPTIONS="$EVASION_OPTIONS --proxies $proxies"
+                echo "Proxy chain set to: $proxies"
+            else
+                echo "No proxies provided."
+            fi
+            ;;
+        7)
+            read -p "Enter custom payload in hex (e.g., DEADBEEF): " hex_data
+            if [[ "$hex_data" =~ ^[0-9A-Fa-f]+$ ]]; then
+                # Check for conflicts with other data options
+                if [[ "$EVASION_OPTIONS" == *"--data-string"* || "$EVASION_OPTIONS" == *"--data-length"* ]]; then
+                    echo "Warning: Only one data option (--data, --data-string, --data-length) can be used at a time."
+                    read -p "Replace existing data option? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                    # Remove existing data options
+                    EVASION_OPTIONS=$(echo "$EVASION_OPTIONS" | sed -E 's/--data(-string|-length)? [^ ]*//g' | sed 's/  / /g')
+                fi
+                EVASION_OPTIONS="$EVASION_OPTIONS --data 0x$hex_data"
+                echo "Custom hex payload added: 0x$hex_data"
+            else
+                echo "Invalid hex format. Use hexadecimal characters only (0-9, A-F)."
+            fi
+            ;;
+        8)
+            read -p "Enter custom ASCII string to append: " ascii_data
+            if [ -n "$ascii_data" ]; then
+                # Check for conflicts with other data options
+                if [[ "$EVASION_OPTIONS" == *"--data 0x"* || "$EVASION_OPTIONS" == *"--data-length"* ]]; then
+                    echo "Warning: Only one data option (--data, --data-string, --data-length) can be used at a time."
+                    read -p "Replace existing data option? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                    # Remove existing data options
+                    EVASION_OPTIONS=$(echo "$EVASION_OPTIONS" | sed -E 's/--data(-length)? [^ ]*|--data 0x[^ ]*//g' | sed 's/  / /g')
+                fi
+                
+                # Properly escape the string to prevent command injection
+                ascii_data_escaped="${ascii_data//\\/\\\\}"
+                ascii_data_escaped="${ascii_data_escaped//\"/\\\"}"
+                EVASION_OPTIONS="$EVASION_OPTIONS --data-string \"$ascii_data_escaped\""
+                echo "Custom ASCII string added: $ascii_data"
+            else
+                echo "No ASCII string provided."
+            fi
+            ;;
+        9)
+            read -p "Enter length of random data to append (bytes): " data_length
+            if [[ "$data_length" =~ ^[0-9]+$ ]] && [ "$data_length" -gt 0 ]; then
+                # Check for conflicts with other data options
+                if [[ "$EVASION_OPTIONS" == *"--data 0x"* || "$EVASION_OPTIONS" == *"--data-string"* ]]; then
+                    echo "Warning: Only one data option (--data, --data-string, --data-length) can be used at a time."
+                    read -p "Replace existing data option? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                    # Remove existing data options
+                    EVASION_OPTIONS=$(echo "$EVASION_OPTIONS" | sed -E 's/--data(-string)? [^ ]*|--data 0x[^ ]*//g' | sed 's/  / /g')
+                fi
+                EVASION_OPTIONS="$EVASION_OPTIONS --data-length $data_length"
+                echo "Random data length set to: $data_length bytes"
+            else
+                echo "Invalid data length. Must be a positive integer."
+            fi
+            ;;
+        10)
+            read -p "Enter TTL value (1-255): " ttl
+            if [[ "$ttl" =~ ^[0-9]+$ ]] && [ "$ttl" -ge 1 ] && [ "$ttl" -le 255 ]; then
+                EVASION_OPTIONS="$EVASION_OPTIONS --ttl $ttl"
+                echo "TTL value set to: $ttl"
+            else
+                echo "Invalid TTL value. Must be between 1 and 255."
+            fi
+            ;;
+        11)
+            echo "MAC address options:"
+            echo "  0: Use a random MAC address"
+            echo "  vendor: Use a random MAC from that vendor"
+            echo "  MAC: Use the specified MAC address"
+            read -p "Enter MAC address option: " mac
+            if [ -n "$mac" ]; then
+                EVASION_OPTIONS="$EVASION_OPTIONS --spoof-mac $mac"
+                echo "MAC spoofing set to: $mac"
+            else
+                echo "No MAC address option provided."
+            fi
+            ;;
+        12)
+            EVASION_OPTIONS="$EVASION_OPTIONS --badsum"
+            echo "Bogus checksum option added"
+            ;;
+        13)
+            # Reset evasion options
+            EVASION_OPTIONS=""
+            echo "All evasion options have been reset."
+            ;;
+        14)
+            # Save evasion options to the global configuration before returning
+            nmap_args="$nmap_args $EVASION_OPTIONS"
+            echo "Firewall/IDS evasion options saved: $EVASION_OPTIONS"
+            echo "Returning to Main Menu..."
+            return_to_menu
+            break
+            ;;
+        "-h"|"--help")
+            display_help
+            ;;
+        *)
+            invalid_input
+            ;;
+        esac
+        read -p "Press Enter to continue..."
+    done
+}
 
 configure_misc_options() {
     local misc_options=""
