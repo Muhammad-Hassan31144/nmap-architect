@@ -257,7 +257,300 @@ prompt_input() {
 # ==========================
 
 # Target Specification Menu
+# configure_target_specification() {
+#     while true; do
+#         clear
+#         echo "Target Specification Menu:"
+#         echo "1. Input single IP/hostname"
+#         echo "2. Input from list of hosts/networks (-iL)"
+#         echo "3. Choose random targets (-iR)"
+#         echo "4. Exclude hosts/networks (--exclude)"
+#         echo "5. Exclude list from file (--excludefile)"
+#         echo "6. Go back to Main Menu"
+#         read -p "Select an option: " choice
+#         case $choice in
+#         1)
+#             prompt_input "Enter target IP address or hostname: " target
+#             if [[ -n "$target" ]]; then
+#                 nmap_args+=" $target"
+#                 echo "Added target: $target"
+#             else
+#                 echo "Error: Target cannot be empty."
+#             fi
+#             ;;
+#         2)
+#             prompt_input "Enter filename containing target hosts/networks: " filename
+#             if [[ -f "$filename" ]]; then
+#                 nmap_args+=" -iL $filename"
+#                 echo "Added: -iL $filename"
+#             else
+#                 echo "Error: File '$filename' not found!"
+#                 echo "Note: If the file is in the same directory as this script, simply use the filename (e.g., 'targets.txt')."
+#             fi
+#             ;;
+#         3)
+#             prompt_input "Enter the number of random hosts to scan: " num_hosts
+#             if [[ "$num_hosts" =~ ^[0-9]+$ && "$num_hosts" -gt 0 ]]; then
+#                 nmap_args+=" -iR $num_hosts"
+#                 echo "Added: -iR $num_hosts"
+#             else
+#                 echo "Error: Number of hosts must be a positive integer."
+#             fi
+#             ;;
+#         4)
+#             prompt_input "Enter hosts/networks to exclude (comma-separated): " exclude_list
+#             if [[ -n "$exclude_list" ]]; then
+#                 nmap_args+=" --exclude $exclude_list"
+#                 echo "Added: --exclude $exclude_list"
+#             else
+#                 echo "Error: Exclude list cannot be empty."
+#             fi
+#             ;;
+#         5)
+#             prompt_input "Enter filename containing exclude list: " exclude_file
+#             if [[ -f "$exclude_file" ]]; then
+#                 nmap_args+=" --excludefile $exclude_file"
+#                 echo "Added: --excludefile $exclude_file"
+#             else
+#                 echo "Error: File '$exclude_file' not found!"
+#                 echo "Note: If the file is in the same directory as this script, simply use the filename (e.g., 'excludes.txt')."
+#             fi
+#             ;;
+#         6)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
+
+
+# Host Discovery Menu
+# configure_host_discovery() {
+#     while true; do
+#         clear
+#         echo "Host Discovery Menu:"
+#         echo "1. List Scan (-sL)"
+#         echo "2. Ping Scan (-sn)"
+#         echo "3. Treat all hosts as online (-Pn)"
+#         echo "4. TCP SYN/ACK, UDP, or SCTP discovery to given ports (-PS/PA/PU/PY)"
+#         echo "5. ICMP echo, timestamp, and netmask request probes (-PE/PP/PM)"
+#         echo "6. Go back to Main Menu"
+#         read -p "Select an option: " choice
+
+#         case $choice in
+#         1)
+#             nmap_args+=" -sL"
+#             echo "Added: -sL"
+#             ;;
+#         2)
+#             nmap_args+=" -sn"
+#             echo "Added: -sn"
+#             ;;
+#         3)
+#             nmap_args+=" -Pn"
+#             echo "Added: -Pn"
+#             ;;
+#         4)
+#             prompt_input "Enter port list for discovery (e.g., 22,80,443): " ports
+#             if [[ -n "$ports" ]]; then
+#                 clear
+#                 echo "Select discovery type for ports: $ports"
+#                 echo "1. TCP SYN (-PS)"
+#                 echo "2. TCP ACK (-PA)"
+#                 echo "3. UDP (-PU)"
+#                 echo "4. SCTP (-PY)"
+#                 read -p "Choose a discovery type: " type_choice
+#                 case $type_choice in
+#                 1)
+#                     nmap_args+=" -PS$ports"
+#                     echo "Added: -PS$ports"
+#                     ;;
+#                 2)
+#                     nmap_args+=" -PA$ports"
+#                     echo "Added: -PA$ports"
+#                     ;;
+#                 3)
+#                     nmap_args+=" -PU$ports"
+#                     echo "Added: -PU$ports"
+#                     ;;
+#                 4)
+#                     nmap_args+=" -PY$ports"
+#                     echo "Added: -PY$ports"
+#                     ;;
+#                 *)
+#                     echo "Error: Invalid discovery type."
+#                     ;;
+#                 esac
+#             else
+#                 echo "Error: Port list cannot be empty."
+#             fi
+#             ;;
+#         5)
+#             clear
+#             echo "Select ICMP probe type:"
+#             echo "1. Echo request (-PE)"
+#             echo "2. Timestamp request (-PP)"
+#             echo "3. Netmask request (-PM)"
+#             read -p "Choose an ICMP probe type: " icmp_choice
+#             case $icmp_choice in
+#             1)
+#                 nmap_args+=" -PE"
+#                 echo "Added: -PE"
+#                 ;;
+#             2)
+#                 nmap_args+=" -PP"
+#                 echo "Added: -PP"
+#                 ;;
+#             3)
+#                 nmap_args+=" -PM"
+#                 echo "Added: -PM"
+#                 ;;
+#             *)
+#                 echo "Error: Invalid ICMP probe type."
+#                 ;;
+#             esac
+#             ;;
+#         6)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
+
+
+# Scan Techniques Menu
+# configure_scan_techniques() {
+#     while true; do
+#         clear
+#         echo "Scan Techniques Menu:"
+#         echo "1. TCP SYN Scan (-sS)"
+#         echo "2. TCP Connect Scan (-sT)"
+#         echo "3. TCP ACK Scan (-sA)"
+#         echo "4. TCP Window Scan (-sW)"
+#         echo "5. TCP Maimon Scan (-sM)"
+#         echo "6. UDP Scan (-sU)"
+#         echo "7. TCP Null Scan (-sN)"
+#         echo "8. TCP FIN Scan (-sF)"
+#         echo "9. TCP Xmas Scan (-sX)"
+#         echo "10. Customize TCP Scan Flags (--scanflags)"
+#         echo "11. Idle Scan (-sI)"
+#         echo "12. SCTP INIT Scan (-sY)"
+#         echo "13. SCTP COOKIE-ECHO Scan (-sZ)"
+#         echo "14. IP Protocol Scan (-sO)"
+#         echo "15. FTP Bounce Scan (-b)"
+#         echo "16. Go back to Main Menu"
+#         read -p "Select an option: " choice
+
+#         case $choice in
+#         1)
+#             nmap_args+=" -sS"
+#             echo "Added: -sS"
+#             ;;
+#         2)
+#             nmap_args+=" -sT"
+#             echo "Added: -sT"
+#             ;;
+#         3)
+#             nmap_args+=" -sA"
+#             echo "Added: -sA"
+#             ;;
+#         4)
+#             nmap_args+=" -sW"
+#             echo "Added: -sW"
+#             ;;
+#         5)
+#             nmap_args+=" -sM"
+#             echo "Added: -sM"
+#             ;;
+#         6)
+#             nmap_args+=" -sU"
+#             echo "Added: -sU"
+#             ;;
+#         7)
+#             nmap_args+=" -sN"
+#             echo "Added: -sN"
+#             ;;
+#         8)
+#             nmap_args+=" -sF"
+#             echo "Added: -sF"
+#             ;;
+#         9)
+#             nmap_args+=" -sX"
+#             echo "Added: -sX"
+#             ;;
+#         10)
+#             prompt_input "Enter custom TCP flags (e.g., SYN,ACK,FIN): " flags
+#             if [[ -n "$flags" ]]; then
+#                 nmap_args+=" --scanflags $flags"
+#                 echo "Added: --scanflags $flags"
+#             else
+#                 echo "Error: TCP flags cannot be empty."
+#             fi
+#             ;;
+#         11)
+#             prompt_input "Enter zombie host (format: host[:probeport]): " zombie
+#             if [[ -n "$zombie" ]]; then
+#                 nmap_args+=" -sI $zombie"
+#                 echo "Added: -sI $zombie"
+#             else
+#                 echo "Error: Zombie host cannot be empty."
+#             fi
+#             ;;
+#         12)
+#             nmap_args+=" -sY"
+#             echo "Added: -sY"
+#             ;;
+#         13)
+#             nmap_args+=" -sZ"
+#             echo "Added: -sZ"
+#             ;;
+#         14)
+#             nmap_args+=" -sO"
+#             echo "Added: -sO"
+#             ;;
+#         15)
+#             prompt_input "Enter FTP relay host: " ftp_host
+#             if [[ -n "$ftp_host" ]]; then
+#                 nmap_args+=" -b $ftp_host"
+#                 echo "Added: -b $ftp_host"
+#             else
+#                 echo "Error: FTP relay host cannot be empty."
+#             fi
+#             ;;
+#         16)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
+# Target Specification Menu
 configure_target_specification() {
+    local target_specified=false
+    
     while true; do
         clear
         echo "Target Specification Menu:"
@@ -266,13 +559,35 @@ configure_target_specification() {
         echo "3. Choose random targets (-iR)"
         echo "4. Exclude hosts/networks (--exclude)"
         echo "5. Exclude list from file (--excludefile)"
-        echo "6. Go back to Main Menu"
+        echo "6. Reset target options"
+        echo "7. Go back to Main Menu"
+        echo
+        echo "Current target options: $(filter_nmap_args '([0-9]{1,3}\.){3}[0-9]{1,3}|[a-zA-Z0-9\.-]+|-iL|--exclude|--excludefile|-iR')"
+        echo
+        
+        # Check if there are any target options
+        if ! $target_specified && [[ "$nmap_args" != *"[0-9]"* && "$nmap_args" != *"-iL"* && "$nmap_args" != *"-iR"* ]]; then
+            echo "WARNING: No target specified. Nmap requires at least one target specification."
+            echo
+        fi
+        
         read -p "Select an option: " choice
+        
         case $choice in
         1)
             prompt_input "Enter target IP address or hostname: " target
             if [[ -n "$target" ]]; then
+                # Check if there are already explicit targets
+                if [[ "$nmap_args" =~ ([0-9]{1,3}\.){3}[0-9]{1,3}|[a-zA-Z0-9\.-]+ && "$nmap_args" != *"-iL"* && "$nmap_args" != *"-iR"* ]]; then
+                    echo "Warning: There appears to be existing targets. Adding a new target will scan both."
+                    read -p "Continue? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                fi
+                
                 nmap_args+=" $target"
+                target_specified=true
                 echo "Added target: $target"
             else
                 echo "Error: Target cannot be empty."
@@ -281,7 +596,22 @@ configure_target_specification() {
         2)
             prompt_input "Enter filename containing target hosts/networks: " filename
             if [[ -f "$filename" ]]; then
+                # Check for existing targets
+                if [[ "$nmap_args" =~ ([0-9]{1,3}\.){3}[0-9]{1,3}|[a-zA-Z0-9\.-]+ || "$nmap_args" == *"-iL"* || "$nmap_args" == *"-iR"* ]]; then
+                    echo "Warning: There appears to be existing targets. Adding a target file will override them."
+                    read -p "Continue? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                    
+                    # Remove existing targets
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/-iL [^ ]+//g' | sed -E 's/-iR [0-9]+//g' | sed 's/  / /g')
+                    # Also try to remove IP addresses/hostnames (this is simplistic but helps)
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/([0-9]{1,3}\.){3}[0-9]{1,3}//g' | sed -E 's/[a-zA-Z0-9][a-zA-Z0-9\.-]+//g' | sed 's/  / /g')
+                }
+                
                 nmap_args+=" -iL $filename"
+                target_specified=true
                 echo "Added: -iL $filename"
             else
                 echo "Error: File '$filename' not found!"
@@ -291,7 +621,22 @@ configure_target_specification() {
         3)
             prompt_input "Enter the number of random hosts to scan: " num_hosts
             if [[ "$num_hosts" =~ ^[0-9]+$ && "$num_hosts" -gt 0 ]]; then
+                # Check for existing targets
+                if [[ "$nmap_args" =~ ([0-9]{1,3}\.){3}[0-9]{1,3}|[a-zA-Z0-9\.-]+ || "$nmap_args" == *"-iL"* || "$nmap_args" == *"-iR"* ]]; then
+                    echo "Warning: There appears to be existing targets. Random targets will override them."
+                    read -p "Continue? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                    
+                    # Remove existing targets
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/-iL [^ ]+//g' | sed -E 's/-iR [0-9]+//g' | sed 's/  / /g')
+                    # Also try to remove IP addresses/hostnames (this is simplistic but helps)
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/([0-9]{1,3}\.){3}[0-9]{1,3}//g' | sed -E 's/[a-zA-Z0-9][a-zA-Z0-9\.-]+//g' | sed 's/  / /g')
+                }
+                
                 nmap_args+=" -iR $num_hosts"
+                target_specified=true
                 echo "Added: -iR $num_hosts"
             else
                 echo "Error: Number of hosts must be a positive integer."
@@ -300,6 +645,9 @@ configure_target_specification() {
         4)
             prompt_input "Enter hosts/networks to exclude (comma-separated): " exclude_list
             if [[ -n "$exclude_list" ]]; then
+                # Remove any existing exclude option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--exclude [^ ]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --exclude $exclude_list"
                 echo "Added: --exclude $exclude_list"
             else
@@ -309,6 +657,9 @@ configure_target_specification() {
         5)
             prompt_input "Enter filename containing exclude list: " exclude_file
             if [[ -f "$exclude_file" ]]; then
+                # Remove any existing exclude file option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--excludefile [^ ]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --excludefile $exclude_file"
                 echo "Added: --excludefile $exclude_file"
             else
@@ -317,6 +668,14 @@ configure_target_specification() {
             fi
             ;;
         6)
+            # Reset all target options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-iL [^ ]+//g' | sed -E 's/-iR [0-9]+//g' | sed -E 's/--exclude [^ ]+//g' | sed -E 's/--excludefile [^ ]+//g' | sed 's/  / /g')
+            # Also try to remove IP addresses/hostnames (this is simplistic but helps)
+            nmap_args=$(echo "$nmap_args" | sed -E 's/([0-9]{1,3}\.){3}[0-9]{1,3}//g' | sed -E 's/[a-zA-Z0-9][a-zA-Z0-9\.-]+//g' | sed 's/  / /g')
+            target_specified=false
+            echo "All target options have been reset."
+            ;;
+        7)
             return_to_menu
             break
             ;;
@@ -334,6 +693,8 @@ configure_target_specification() {
 
 # Host Discovery Menu
 configure_host_discovery() {
+    local ping_option_set=false
+    
     while true; do
         clear
         echo "Host Discovery Menu:"
@@ -342,20 +703,71 @@ configure_host_discovery() {
         echo "3. Treat all hosts as online (-Pn)"
         echo "4. TCP SYN/ACK, UDP, or SCTP discovery to given ports (-PS/PA/PU/PY)"
         echo "5. ICMP echo, timestamp, and netmask request probes (-PE/PP/PM)"
-        echo "6. Go back to Main Menu"
+        echo "6. Reset discovery options"
+        echo "7. Go back to Main Menu"
+        echo
+        echo "Current discovery options: $(filter_nmap_args '-sL|-sn|-P[nEPM]|-P[SAUY]')"
+        echo
+        
+        # Check for conflicts
+        if [[ "$nmap_args" == *"-sL"* && ("$nmap_args" == *"-sn"* || "$nmap_args" == *"-Pn"*) ]]; then
+            echo "WARNING: Conflicting options detected. List scan (-sL) with ping scan (-sn) or no ping (-Pn)."
+            echo "This may produce unexpected results."
+            echo
+        fi
+        
         read -p "Select an option: " choice
 
         case $choice in
         1)
+            # Check for conflicting options
+            if [[ "$nmap_args" == *"-sn"* || "$nmap_args" == *"-Pn"* ]]; then
+                echo "Warning: List scan (-sL) conflicts with other ping options (-sn, -Pn)."
+                read -p "Continue anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+            fi
+            
+            # Remove any existing list scan option
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-sL//g' | sed 's/  / /g')
+            
             nmap_args+=" -sL"
+            ping_option_set=true
             echo "Added: -sL"
             ;;
         2)
+            # Check for conflicting options
+            if [[ "$nmap_args" == *"-sL"* || "$nmap_args" == *"-Pn"* ]]; then
+                echo "Warning: Ping scan (-sn) conflicts with other ping options (-sL, -Pn)."
+                read -p "Continue anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                }
+            fi
+            
+            # Remove any existing ping scan option
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-sn//g' | sed 's/  / /g')
+            
             nmap_args+=" -sn"
+            ping_option_set=true
             echo "Added: -sn"
             ;;
         3)
+            # Check for conflicting options
+            if [[ "$nmap_args" == *"-sL"* || "$nmap_args" == *"-sn"* ]]; then
+                echo "Warning: No ping (-Pn) conflicts with other ping options (-sL, -sn)."
+                read -p "Continue anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+            fi
+            
+            # Remove any existing no ping option
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-Pn//g' | sed 's/  / /g')
+            
             nmap_args+=" -Pn"
+            ping_option_set=true
             echo "Added: -Pn"
             ;;
         4)
@@ -370,19 +782,35 @@ configure_host_discovery() {
                 read -p "Choose a discovery type: " type_choice
                 case $type_choice in
                 1)
+                    # Remove any existing TCP SYN discovery option
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/-PS[0-9,]+//g' | sed 's/  / /g')
+                    
                     nmap_args+=" -PS$ports"
+                    ping_option_set=true
                     echo "Added: -PS$ports"
                     ;;
                 2)
+                    # Remove any existing TCP ACK discovery option
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/-PA[0-9,]+//g' | sed 's/  / /g')
+                    
                     nmap_args+=" -PA$ports"
+                    ping_option_set=true
                     echo "Added: -PA$ports"
                     ;;
                 3)
+                    # Remove any existing UDP discovery option
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/-PU[0-9,]+//g' | sed 's/  / /g')
+                    
                     nmap_args+=" -PU$ports"
+                    ping_option_set=true
                     echo "Added: -PU$ports"
                     ;;
                 4)
+                    # Remove any existing SCTP discovery option
+                    nmap_args=$(echo "$nmap_args" | sed -E 's/-PY[0-9,]+//g' | sed 's/  / /g')
+                    
                     nmap_args+=" -PY$ports"
+                    ping_option_set=true
                     echo "Added: -PY$ports"
                     ;;
                 *)
@@ -402,15 +830,27 @@ configure_host_discovery() {
             read -p "Choose an ICMP probe type: " icmp_choice
             case $icmp_choice in
             1)
+                # Remove any existing ICMP echo option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/-PE//g' | sed 's/  / /g')
+                
                 nmap_args+=" -PE"
+                ping_option_set=true
                 echo "Added: -PE"
                 ;;
             2)
+                # Remove any existing ICMP timestamp option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/-PP//g' | sed 's/  / /g')
+                
                 nmap_args+=" -PP"
+                ping_option_set=true
                 echo "Added: -PP"
                 ;;
             3)
+                # Remove any existing ICMP netmask option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/-PM//g' | sed 's/  / /g')
+                
                 nmap_args+=" -PM"
+                ping_option_set=true
                 echo "Added: -PM"
                 ;;
             *)
@@ -419,6 +859,12 @@ configure_host_discovery() {
             esac
             ;;
         6)
+            # Reset all host discovery options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-sL|-sn|-P[nEPM]|-P[SAUY][0-9,]*//g' | sed 's/  / /g')
+            ping_option_set=false
+            echo "All host discovery options have been reset."
+            ;;
+        7)
             return_to_menu
             break
             ;;
@@ -436,6 +882,8 @@ configure_host_discovery() {
 
 # Scan Techniques Menu
 configure_scan_techniques() {
+    local scan_technique_set=false
+    
     while true; do
         clear
         echo "Scan Techniques Menu:"
@@ -454,50 +902,115 @@ configure_scan_techniques() {
         echo "13. SCTP COOKIE-ECHO Scan (-sZ)"
         echo "14. IP Protocol Scan (-sO)"
         echo "15. FTP Bounce Scan (-b)"
-        echo "16. Go back to Main Menu"
+        echo "16. Reset scan techniques"
+        echo "17. Go back to Main Menu"
+        echo
+        echo "Current scan techniques: $(filter_nmap_args '-s[ASTWNMUFXIYZVO]|--scanflags|-b')"
+        echo
+        
+        # Check for potential issues
+        if [[ "$nmap_args" == *"-sL"* && "$nmap_args" =~ -s[ASTWNMUFXIYZVO] ]]; then
+            echo "WARNING: List scan (-sL) with port scanning techniques will only list targets."
+            echo "Port scanning will not be performed with -sL option."
+            echo
+        fi
+        
+        if [[ "$nmap_args" == *"-sn"* && "$nmap_args" =~ -s[ASTWNMUFXIYZVO] ]]; then
+            echo "WARNING: Ping scan (-sn) with port scanning techniques will not scan ports."
+            echo "Port scanning will not be performed with -sn option."
+            echo
+        fi
+        
         read -p "Select an option: " choice
 
         case $choice in
         1)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP SYN Scan (-sS)" "-sS" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sS"
+            scan_technique_set=true
             echo "Added: -sS"
             ;;
         2)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP Connect Scan (-sT)" "-sT" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sT"
+            scan_technique_set=true
             echo "Added: -sT"
             ;;
         3)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP ACK Scan (-sA)" "-sA" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sA"
+            scan_technique_set=true
             echo "Added: -sA"
             ;;
         4)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP Window Scan (-sW)" "-sW" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sW"
+            scan_technique_set=true
             echo "Added: -sW"
             ;;
         5)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP Maimon Scan (-sM)" "-sM" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sM"
+            scan_technique_set=true
             echo "Added: -sM"
             ;;
         6)
+            # UDP scan can be combined with a TCP scan technique
             nmap_args+=" -sU"
+            scan_technique_set=true
             echo "Added: -sU"
             ;;
         7)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP Null Scan (-sN)" "-sN" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sN"
+            scan_technique_set=true
             echo "Added: -sN"
             ;;
         8)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP FIN Scan (-sF)" "-sF" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sF"
+            scan_technique_set=true
             echo "Added: -sF"
             ;;
         9)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "TCP Xmas Scan (-sX)" "-sX" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sX"
+            scan_technique_set=true
             echo "Added: -sX"
             ;;
         10)
             prompt_input "Enter custom TCP flags (e.g., SYN,ACK,FIN): " flags
             if [[ -n "$flags" ]]; then
+                # Check for conflicting scan techniques
+                check_scan_conflicts "Custom TCP Flag Scan (--scanflags)" "--scanflags" "$nmap_args"
+                if [ $? -eq 1 ]; then continue; fi
+                
                 nmap_args+=" --scanflags $flags"
+                scan_technique_set=true
                 echo "Added: --scanflags $flags"
             else
                 echo "Error: TCP flags cannot be empty."
@@ -506,34 +1019,65 @@ configure_scan_techniques() {
         11)
             prompt_input "Enter zombie host (format: host[:probeport]): " zombie
             if [[ -n "$zombie" ]]; then
+                # Check for conflicting scan techniques
+                check_scan_conflicts "Idle Scan (-sI)" "-sI" "$nmap_args"
+                if [ $? -eq 1 ]; then continue; fi
+                
                 nmap_args+=" -sI $zombie"
+                scan_technique_set=true
                 echo "Added: -sI $zombie"
             else
                 echo "Error: Zombie host cannot be empty."
             fi
             ;;
         12)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "SCTP INIT Scan (-sY)" "-sY" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sY"
+            scan_technique_set=true
             echo "Added: -sY"
             ;;
         13)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "SCTP COOKIE-ECHO Scan (-sZ)" "-sZ" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sZ"
+            scan_technique_set=true
             echo "Added: -sZ"
             ;;
         14)
+            # Check for conflicting scan techniques
+            check_scan_conflicts "IP Protocol Scan (-sO)" "-sO" "$nmap_args"
+            if [ $? -eq 1 ]; then continue; fi
+            
             nmap_args+=" -sO"
+            scan_technique_set=true
             echo "Added: -sO"
             ;;
         15)
             prompt_input "Enter FTP relay host: " ftp_host
             if [[ -n "$ftp_host" ]]; then
+                # Check for conflicting scan techniques
+                check_scan_conflicts "FTP Bounce Scan (-b)" "-b" "$nmap_args"
+                if [ $? -eq 1 ]; then continue; fi
+                
                 nmap_args+=" -b $ftp_host"
+                scan_technique_set=true
                 echo "Added: -b $ftp_host"
             else
                 echo "Error: FTP relay host cannot be empty."
             fi
             ;;
         16)
+            # Reset all scan technique options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-s[ASTWNMUFXIYZVO][^ ]*//g' | sed -E 's/--scanflags [^ ]+//g' | sed -E 's/-b [^ ]+//g' | sed 's/  / /g')
+            scan_technique_set=false
+            echo "All scan technique options have been reset."
+            ;;
+        17)
             return_to_menu
             break
             ;;
@@ -547,6 +1091,51 @@ configure_scan_techniques() {
         read -p "Press Enter to continue..."
     done
 }
+
+# Helper function to check for conflicting scan techniques
+check_scan_conflicts() {
+    local scan_name="$1"
+    local scan_option="$2"
+    local current_args="$3"
+    
+    # TCP scan techniques that conflict with each other
+    local tcp_scans="-sS -sT -sA -sW -sM -sN -sF -sX --scanflags -sI"
+    
+    # Check if trying to add a TCP scan when one already exists
+    if [[ "$tcp_scans" == *"$scan_option"* ]]; then
+        for scan in $tcp_scans; do
+            if [[ "$current_args" == *"$scan"* && "$scan" != "$scan_option" ]]; then
+                echo "Warning: $scan_name conflicts with existing TCP scan technique."
+                echo "Multiple TCP scan techniques cannot be used together."
+                read -p "Replace existing TCP scan technique? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    return 1
+                fi
+                
+                # Remove existing TCP scan techniques
+                nmap_args=$(echo "$current_args" | sed -E 's/-s[STAWNMFXI]( [^ ]+)?//g' | sed -E 's/--scanflags [^ ]+//g' | sed 's/  / /g')
+                return 0
+            fi
+        done
+    fi
+    
+    # SCTP scan conflicts
+    if [[ "$scan_option" == "-sY" && "$current_args" == *"-sZ"* ]] || [[ "$scan_option" == "-sZ" && "$current_args" == *"-sY"* ]]; then
+        echo "Warning: $scan_name conflicts with existing SCTP scan technique."
+        echo "Multiple SCTP scan techniques cannot be used together."
+        read -p "Replace existing SCTP scan technique? (y/n): " confirm
+        if [[ "$confirm" != "y" ]]; then
+            return 1
+        fi
+        
+        # Remove existing SCTP scan techniques
+        nmap_args=$(echo "$current_args" | sed -E 's/-s[YZ]//g' | sed 's/  / /g')
+        return 0
+    fi
+    
+    return 0
+}
+
 
 
 # Port Specification Menu
