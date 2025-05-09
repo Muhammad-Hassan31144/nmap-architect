@@ -550,7 +550,82 @@ configure_scan_techniques() {
 
 
 # Port Specification Menu
+# configure_port_specification() {
+#     while true; do
+#         clear
+#         echo "Port Specification Menu:"
+#         echo "1. Scan specific port ranges (-p)"
+#         echo "2. Exclude specific port ranges (--exclude-ports)"
+#         echo "3. Fast mode (-F)"
+#         echo "4. Scan ports sequentially (-r)"
+#         echo "5. Scan top N most common ports (--top-ports)"
+#         echo "6. Scan ports more common than a ratio (--port-ratio)"
+#         echo "7. Go back to Main Menu"
+#         read -p "Select an option: " choice
+
+#         case $choice in
+#         1)
+#             prompt_input "Enter port ranges (e.g., 22; 1-65535; U:53,111,T:21-25): " ports
+#             if [[ -n "$ports" ]]; then
+#                 nmap_args+=" -p $ports"
+#                 echo "Added: -p $ports"
+#             else
+#                 echo "Error: Port ranges cannot be empty."
+#             fi
+#             ;;
+#         2)
+#             prompt_input "Enter ports to exclude (e.g., 80,443): " exclude_ports
+#             if [[ -n "$exclude_ports" ]]; then
+#                 nmap_args+=" --exclude-ports $exclude_ports"
+#                 echo "Added: --exclude-ports $exclude_ports"
+#             else
+#                 echo "Error: Excluded ports cannot be empty."
+#             fi
+#             ;;
+#         3)
+#             nmap_args+=" -F"
+#             echo "Added: -F"
+#             ;;
+#         4)
+#             nmap_args+=" -r"
+#             echo "Added: -r"
+#             ;;
+#         5)
+#             prompt_input "Enter number of top ports to scan: " top_ports
+#             if [[ "$top_ports" =~ ^[0-9]+$ && "$top_ports" -gt 0 && "$top_ports" -le 65535 ]]; then
+#                 nmap_args+=" --top-ports $top_ports"
+#                 echo "Added: --top-ports $top_ports"
+#             else
+#                 echo "Error: Number of top ports must be a positive integer between 1 and 65535."
+#             fi
+#             ;;
+#         6)
+#             prompt_input "Enter port ratio (0.0 to 1.0): " ratio
+#             if [[ "$ratio" =~ ^0\.[0-9]+$ || "$ratio" == "1.0" || "$ratio" == "0.0" ]]; then
+#                 nmap_args+=" --port-ratio $ratio"
+#                 echo "Added: --port-ratio $ratio"
+#             else
+#                 echo "Error: Port ratio must be a decimal between 0.0 and 1.0."
+#             fi
+#             ;;
+#         7)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
+# Port Specification Menu
 configure_port_specification() {
+    local port_option_set=false
+    
     while true; do
         clear
         echo "Port Specification Menu:"
@@ -560,14 +635,42 @@ configure_port_specification() {
         echo "4. Scan ports sequentially (-r)"
         echo "5. Scan top N most common ports (--top-ports)"
         echo "6. Scan ports more common than a ratio (--port-ratio)"
-        echo "7. Go back to Main Menu"
+        echo "7. Reset port options"
+        echo "8. Go back to Main Menu"
+        echo
+        echo "Current port options: $(filter_nmap_args '-p|--exclude-ports|-F|-r|--top-ports|--port-ratio')"
+        echo
+        
+        # Check for conflicts
+        if [[ "$nmap_args" == *"-F"* && ("$nmap_args" == *"-p"* || "$nmap_args" == *"--top-ports"* || "$nmap_args" == *"--port-ratio"*) ]]; then
+            echo "WARNING: Fast scan (-F) with other port selection options may produce unexpected results."
+            echo "Fast scan is already limited to the most common ports."
+            echo
+        fi
+        
         read -p "Select an option: " choice
 
         case $choice in
         1)
             prompt_input "Enter port ranges (e.g., 22; 1-65535; U:53,111,T:21-25): " ports
             if [[ -n "$ports" ]]; then
+                # Check for conflicts with other port selection options
+                if [[ "$nmap_args" == *"-F"* || "$nmap_args" == *"--top-ports"* || "$nmap_args" == *"--port-ratio"* ]]; then
+                    echo "Warning: Specific port selection conflicts with other port options (-F, --top-ports, --port-ratio)."
+                    read -p "Remove conflicting options? (y/n): " confirm
+                    if [[ "$confirm" == "y" ]]; then
+                        # Remove conflicting options
+                        nmap_args=$(echo "$nmap_args" | sed -E 's/-F//g' | sed -E 's/--top-ports [0-9]+//g' | sed -E 's/--port-ratio [0-9.]+//g' | sed 's/  / /g')
+                    else
+                        echo "Note: Your port selection may be limited by other port options."
+                    fi
+                fi
+                
+                # Remove any existing port selection
+                nmap_args=$(echo "$nmap_args" | sed -E 's/-p [^ ]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" -p $ports"
+                port_option_set=true
                 echo "Added: -p $ports"
             else
                 echo "Error: Port ranges cannot be empty."
@@ -576,6 +679,9 @@ configure_port_specification() {
         2)
             prompt_input "Enter ports to exclude (e.g., 80,443): " exclude_ports
             if [[ -n "$exclude_ports" ]]; then
+                # Remove any existing port exclusion
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--exclude-ports [^ ]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --exclude-ports $exclude_ports"
                 echo "Added: --exclude-ports $exclude_ports"
             else
@@ -583,32 +689,87 @@ configure_port_specification() {
             fi
             ;;
         3)
+            # Check for conflicts with other port selection options
+            if [[ "$nmap_args" == *"-p"* || "$nmap_args" == *"--top-ports"* || "$nmap_args" == *"--port-ratio"* ]]; then
+                echo "Warning: Fast scan (-F) conflicts with other port selection options (-p, --top-ports, --port-ratio)."
+                read -p "Continue anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+            fi
+            
+            # Remove any existing fast scan option
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-F//g' | sed 's/  / /g')
+            
             nmap_args+=" -F"
+            port_option_set=true
             echo "Added: -F"
             ;;
         4)
+            # Remove any existing sequential scan option
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-r//g' | sed 's/  / /g')
+            
             nmap_args+=" -r"
+            port_option_set=true
             echo "Added: -r"
             ;;
         5)
             prompt_input "Enter number of top ports to scan: " top_ports
-            if [[ "$top_ports" =~ ^[0-9]+$ && "$top_ports" -gt 0 && "$top_ports" -le 65535 ]]; then
+            if [[ "$top_ports" =~ ^[0-9]+$ && "$top_ports" -gt 0 ]]; then
+                # Check for conflicts with other port selection options
+                if [[ "$nmap_args" == *"-F"* || "$nmap_args" == *"-p"* || "$nmap_args" == *"--port-ratio"* ]]; then
+                    echo "Warning: Top ports scan conflicts with other port options (-F, -p, --port-ratio)."
+                    read -p "Remove conflicting options? (y/n): " confirm
+                    if [[ "$confirm" == "y" ]]; then
+                        # Remove conflicting options
+                        nmap_args=$(echo "$nmap_args" | sed -E 's/-F//g' | sed -E 's/-p [^ ]+//g' | sed -E 's/--port-ratio [0-9.]+//g' | sed 's/  / /g')
+                    else
+                        echo "Note: Your top ports selection may be limited by other port options."
+                    fi
+                fi
+                
+                # Remove any existing top ports option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--top-ports [0-9]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --top-ports $top_ports"
+                port_option_set=true
                 echo "Added: --top-ports $top_ports"
             else
-                echo "Error: Number of top ports must be a positive integer between 1 and 65535."
+                echo "Error: Number of top ports must be a positive integer."
             fi
             ;;
         6)
-            prompt_input "Enter port ratio (0.0 to 1.0): " ratio
-            if [[ "$ratio" =~ ^0\.[0-9]+$ || "$ratio" == "1.0" || "$ratio" == "0.0" ]]; then
-                nmap_args+=" --port-ratio $ratio"
-                echo "Added: --port-ratio $ratio"
+            prompt_input "Enter port ratio (0.0-1.0): " port_ratio
+            if [[ "$port_ratio" =~ ^[0-9]*\.?[0-9]+$ && $(echo "$port_ratio <= 1.0" | bc -l) -eq 1 && $(echo "$port_ratio > 0.0" | bc -l) -eq 1 ]]; then
+                # Check for conflicts with other port selection options
+                if [[ "$nmap_args" == *"-F"* || "$nmap_args" == *"-p"* || "$nmap_args" == *"--top-ports"* ]]; then
+                    echo "Warning: Port ratio conflicts with other port options (-F, -p, --top-ports)."
+                    read -p "Remove conflicting options? (y/n): " confirm
+                    if [[ "$confirm" == "y" ]]; then
+                        # Remove conflicting options
+                        nmap_args=$(echo "$nmap_args" | sed -E 's/-F//g' | sed -E 's/-p [^ ]+//g' | sed -E 's/--top-ports [0-9]+//g' | sed 's/  / /g')
+                    else
+                        echo "Note: Your port ratio selection may be limited by other port options."
+                    fi
+                fi
+                
+                # Remove any existing port ratio option
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--port-ratio [0-9.]+//g' | sed 's/  / /g')
+                
+                nmap_args+=" --port-ratio $port_ratio"
+                port_option_set=true
+                echo "Added: --port-ratio $port_ratio"
             else
-                echo "Error: Port ratio must be a decimal between 0.0 and 1.0."
+                echo "Error: Port ratio must be a decimal number between 0.0 and 1.0."
             fi
             ;;
         7)
+            # Reset all port options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-p [^ ]+//g' | sed -E 's/--exclude-ports [^ ]+//g' | sed -E 's/-F//g' | sed -E 's/-r//g' | sed -E 's/--top-ports [0-9]+//g' | sed -E 's/--port-ratio [0-9.]+//g' | sed 's/  / /g')
+            port_option_set=false
+            echo "All port options have been reset."
+            ;;
+        8)
             return_to_menu
             break
             ;;
