@@ -1427,47 +1427,169 @@ configure_port_specification() {
 #     done
 # }
 
-# OS Detection Menu
-configure_os_detection() {
-    while true; do
-        clear
-        echo "OS Detection Menu:"
-        echo "1. Enable OS detection (-O)"
-        echo "2. Limit OS detection to promising targets (--osscan-limit)"
-        echo "3. Guess OS more aggressively (--osscan-guess)"
-        echo "4. Go back to Main Menu"
-        read -p "Select an option: " choice
+# # OS Detection Menu
+# configure_os_detection() {
+#     while true; do
+#         clear
+#         echo "OS Detection Menu:"
+#         echo "1. Enable OS detection (-O)"
+#         echo "2. Limit OS detection to promising targets (--osscan-limit)"
+#         echo "3. Guess OS more aggressively (--osscan-guess)"
+#         echo "4. Go back to Main Menu"
+#         read -p "Select an option: " choice
 
-        case $choice in
-        1)
-            nmap_args+=" -O"
-            echo "Added: -O"
-            ;;
-        2)
-            nmap_args+=" --osscan-limit"
-            echo "Added: --osscan-limit"
-            ;;
-        3)
-            nmap_args+=" --osscan-guess"
-            echo "Added: --osscan-guess"
-            ;;
-        4)
-            return_to_menu
-            break
-            ;;
-        "-h"|"--help")
-            display_help
-            ;;
-        *)
-            invalid_input
-            ;;
-        esac
-        read -p "Press Enter to continue..."
-    done
-}
+#         case $choice in
+#         1)
+#             nmap_args+=" -O"
+#             echo "Added: -O"
+#             ;;
+#         2)
+#             nmap_args+=" --osscan-limit"
+#             echo "Added: --osscan-limit"
+#             ;;
+#         3)
+#             nmap_args+=" --osscan-guess"
+#             echo "Added: --osscan-guess"
+#             ;;
+#         4)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
 
-# Timing and Performance Menu
+# # Timing and Performance Menu
+# configure_timing_performance() {
+#     while true; do
+#         clear
+#         echo "Timing and Performance Menu:"
+#         echo "1. Set timing template (-T<0-5>)"
+#         echo "2. Set parallel host scan group sizes (--min-hostgroup/max-hostgroup)"
+#         echo "3. Adjust probe parallelization (--min-parallelism/max-parallelism)"
+#         echo "4. Set RTT timeouts (--min-rtt-timeout/max-rtt-timeout/initial-rtt-timeout)"
+#         echo "5. Cap number of retries (--max-retries)"
+#         echo "6. Set host timeout (--host-timeout)"
+#         echo "7. Adjust scan delay (--scan-delay/--max-scan-delay)"
+#         echo "8. Set minimum packet rate (--min-rate)"
+#         echo "9. Set maximum packet rate (--max-rate)"
+#         echo "10. Go back to Main Menu"
+#         read -p "Select an option: " choice
+
+#         case $choice in
+#         1)
+#             prompt_input "Enter timing template (0-5): " timing
+#             if [[ "$timing" =~ ^[0-5]$ ]]; then
+#                 nmap_args+=" -T$timing"
+#                 echo "Added: -T$timing"
+#             else
+#                 echo "Error: Timing template must be a number between 0 and 5."
+#             fi
+#             ;;
+#         2)
+#             prompt_input "Enter minimum host group size: " min_hostgroup
+#             prompt_input "Enter maximum host group size: " max_hostgroup
+#             if [[ "$min_hostgroup" =~ ^[0-9]+$ && "$max_hostgroup" =~ ^[0-9]+$ && "$min_hostgroup" -le "$max_hostgroup" ]]; then
+#                 nmap_args+=" --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
+#                 echo "Added: --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
+#             else
+#                 echo "Error: Host group sizes must be positive integers, and minimum must not exceed maximum."
+#             fi
+#             ;;
+#         3)
+#             prompt_input "Enter minimum parallel probes: " min_parallelism
+#             prompt_input "Enter maximum parallel probes: " max_parallelism
+#             if [[ "$min_parallelism" =~ ^[0-9]+$ && "$max_parallelism" =~ ^[0-9]+$ && "$min_parallelism" -le "$max_parallelism" ]]; then
+#                 nmap_args+=" --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
+#                 echo "Added: --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
+#             else
+#                 echo "Error: Parallelism values must be positive integers, and minimum must not exceed maximum."
+#             fi
+#             ;;
+#         4)
+#             prompt_input "Enter initial RTT timeout (e.g., 30ms, 1s): " initial_rtt
+#             prompt_input "Enter minimum RTT timeout (e.g., 30ms, 1s): " min_rtt
+#             prompt_input "Enter maximum RTT timeout (e.g., 30ms, 1s): " max_rtt
+#             if [[ "$initial_rtt" =~ ^[0-9]+(ms|s)$ && "$min_rtt" =~ ^[0-9]+(ms|s)$ && "$max_rtt" =~ ^[0-9]+(ms|s)$ ]]; then
+#                 nmap_args+=" --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
+#                 echo "Added: --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
+#             else
+#                 echo "Error: RTT timeouts must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
+#             fi
+#             ;;
+#         5)
+#             prompt_input "Enter maximum retries: " retries
+#             if [[ "$retries" =~ ^[0-9]+$ ]]; then
+#                 nmap_args+=" --max-retries $retries"
+#                 echo "Added: --max-retries $retries"
+#             else
+#                 echo "Error: Maximum retries must be a positive integer."
+#             fi
+#             ;;
+#         6)
+#             prompt_input "Enter host timeout (e.g., 30ms, 1s): " timeout
+#             if [[ "$timeout" =~ ^[0-9]+(ms|s)$ ]]; then
+#                 nmap_args+=" --host-timeout $timeout"
+#                 echo "Added: --host-timeout $timeout"
+#             else
+#                 echo "Error: Host timeout must be a positive number followed by 'ms' or 's' (e.g., 30ms, 1s)."
+#             fi
+#             ;;
+#         7)
+#             prompt_input "Enter scan delay (e.g., 30ms, 1s): " scan_delay
+#             prompt_input "Enter maximum scan delay (e.g., 30ms, 1s): " max_scan_delay
+#             if [[ "$scan_delay" =~ ^[0-9]+(ms|s)$ && "$max_scan_delay" =~ ^[0-9]+(ms|s)$ ]]; then
+#                 nmap_args+=" --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
+#                 echo "Added: --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
+#             else
+#                 echo "Error: Scan delays must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
+#             fi
+#             ;;
+#         8)
+#             prompt_input "Enter minimum packet rate: " min_rate
+#             if [[ "$min_rate" =~ ^[0-9]+$ ]]; then
+#                 nmap_args+=" --min-rate $min_rate"
+#                 echo "Added: --min-rate $min_rate"
+#             else
+#                 echo "Error: Minimum packet rate must be a positive integer."
+#             fi
+#             ;;
+#         9)
+#             prompt_input "Enter maximum packet rate: " max_rate
+#             if [[ "$max_rate" =~ ^[0-9]+$ ]]; then
+#                 nmap_args+=" --max-rate $max_rate"
+#                 echo "Added: --max-rate $max_rate"
+#             else
+#                 echo "Error: Maximum packet rate must be a positive integer."
+#             fi
+#             ;;
+#         10)
+#             return_to_menu
+#             break
+#             ;;
+#         "-h"|"--help")
+#             display_help
+#             ;;
+#         *)
+#             invalid_input
+#             ;;
+#         esac
+#         read -p "Press Enter to continue..."
+#     done
+# }
+
+# Fixed Timing and Performance Menu
 configure_timing_performance() {
+    local timing_template_set=false
+    local custom_timing_set=false
+    
     while true; do
         clear
         echo "Timing and Performance Menu:"
@@ -1480,15 +1602,49 @@ configure_timing_performance() {
         echo "7. Adjust scan delay (--scan-delay/--max-scan-delay)"
         echo "8. Set minimum packet rate (--min-rate)"
         echo "9. Set maximum packet rate (--max-rate)"
-        echo "10. Go back to Main Menu"
+        echo "10. Reset timing options"
+        echo "11. Go back to Main Menu"
+        echo
+        echo "Current timing options: $(filter_nmap_args '-T[0-5]|--min-|--max-|--host-timeout|--scan-delay|--initial-rtt-timeout')"
+        echo
+        
+        if $timing_template_set && $custom_timing_set; then
+            echo "WARNING: You have both a timing template (-T) and custom timing options."
+            echo "Custom options will override the template settings."
+            echo
+        fi
+        
         read -p "Select an option: " choice
 
         case $choice in
         1)
             prompt_input "Enter timing template (0-5): " timing
             if [[ "$timing" =~ ^[0-5]$ ]]; then
+                if $custom_timing_set; then
+                    echo "Warning: Setting a timing template may conflict with custom timing options."
+                    echo "Timing templates (-T0 to -T5) set multiple timing parameters automatically."
+                    read -p "Continue? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                fi
+                
+                # Remove any existing timing template
+                nmap_args=$(echo "$nmap_args" | sed -E 's/-T[0-5]//g' | sed 's/  / /g')
+                
                 nmap_args+=" -T$timing"
+                timing_template_set=true
                 echo "Added: -T$timing"
+                
+                echo -e "\nTiming template information:"
+                case $timing in
+                    0) echo "T0 (Paranoid): Very slow scan to avoid detection" ;;
+                    1) echo "T1 (Sneaky): Slow scan to avoid detection" ;;
+                    2) echo "T2 (Polite): Slows down to use less bandwidth and target resources" ;;
+                    3) echo "T3 (Normal): Default timing, a balance between accuracy and speed" ;;
+                    4) echo "T4 (Aggressive): Faster scans assuming a reasonably fast and reliable network" ;;
+                    5) echo "T5 (Insane): Very aggressive timing; prioritizes speed over reliability" ;;
+                esac
             else
                 echo "Error: Timing template must be a number between 0 and 5."
             fi
@@ -1496,81 +1652,236 @@ configure_timing_performance() {
         2)
             prompt_input "Enter minimum host group size: " min_hostgroup
             prompt_input "Enter maximum host group size: " max_hostgroup
-            if [[ "$min_hostgroup" =~ ^[0-9]+$ && "$max_hostgroup" =~ ^[0-9]+$ && "$min_hostgroup" -le "$max_hostgroup" ]]; then
+            if [[ "$min_hostgroup" =~ ^[0-9]+$ && "$max_hostgroup" =~ ^[0-9]+$ ]]; then
+                if [ "$min_hostgroup" -gt "$max_hostgroup" ]; then
+                    echo "Error: Minimum host group size cannot be greater than maximum."
+                    continue
+                fi
+                
+                # Remove any existing hostgroup settings
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--min-hostgroup [0-9]+//g' | sed -E 's/--max-hostgroup [0-9]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
+                custom_timing_set=true
                 echo "Added: --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
+                
+                warn_timing_template_override
             else
-                echo "Error: Host group sizes must be positive integers, and minimum must not exceed maximum."
+                echo "Error: Host group sizes must be positive integers."
             fi
             ;;
         3)
             prompt_input "Enter minimum parallel probes: " min_parallelism
             prompt_input "Enter maximum parallel probes: " max_parallelism
-            if [[ "$min_parallelism" =~ ^[0-9]+$ && "$max_parallelism" =~ ^[0-9]+$ && "$min_parallelism" -le "$max_parallelism" ]]; then
+            if [[ "$min_parallelism" =~ ^[0-9]+$ && "$max_parallelism" =~ ^[0-9]+$ ]]; then
+                if [ "$min_parallelism" -gt "$max_parallelism" ]; then
+                    echo "Error: Minimum parallelism cannot be greater than maximum."
+                    continue
+                fi
+                
+                # Remove any existing parallelism settings
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--min-parallelism [0-9]+//g' | sed -E 's/--max-parallelism [0-9]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
+                custom_timing_set=true
                 echo "Added: --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
+                
+                warn_timing_template_override
             else
-                echo "Error: Parallelism values must be positive integers, and minimum must not exceed maximum."
+                echo "Error: Parallelism values must be positive integers."
             fi
             ;;
         4)
             prompt_input "Enter initial RTT timeout (e.g., 30ms, 1s): " initial_rtt
             prompt_input "Enter minimum RTT timeout (e.g., 30ms, 1s): " min_rtt
             prompt_input "Enter maximum RTT timeout (e.g., 30ms, 1s): " max_rtt
-            if [[ "$initial_rtt" =~ ^[0-9]+(ms|s)$ && "$min_rtt" =~ ^[0-9]+(ms|s)$ && "$max_rtt" =~ ^[0-9]+(ms|s)$ ]]; then
-                nmap_args+=" --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
-                echo "Added: --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
-            else
+            
+            # Validate format
+            if [[ ! "$initial_rtt" =~ ^[0-9]+(ms|s)$ || ! "$min_rtt" =~ ^[0-9]+(ms|s)$ || ! "$max_rtt" =~ ^[0-9]+(ms|s)$ ]]; then
                 echo "Error: RTT timeouts must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
+                continue
             fi
+            
+            # Convert values to milliseconds for comparison
+            local init_ms=$(convert_to_ms "$initial_rtt")
+            local min_ms=$(convert_to_ms "$min_rtt")
+            local max_ms=$(convert_to_ms "$max_rtt")
+            
+            if [ $min_ms -gt $max_ms ]; then
+                echo "Error: Minimum RTT timeout cannot be greater than maximum RTT timeout."
+                continue
+            fi
+            
+            if [ $init_ms -lt $min_ms ]; then
+                echo "Warning: Initial RTT timeout is less than minimum RTT timeout."
+                echo "This may cause issues. Consider setting initial ≥ minimum."
+                read -p "Continue anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+            fi
+            
+            # Remove any existing RTT timeout settings
+            nmap_args=$(echo "$nmap_args" | sed -E 's/--initial-rtt-timeout [0-9]+(ms|s)//g' | sed -E 's/--min-rtt-timeout [0-9]+(ms|s)//g' | sed -E 's/--max-rtt-timeout [0-9]+(ms|s)//g' | sed 's/  / /g')
+            
+            nmap_args+=" --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
+            custom_timing_set=true
+            echo "Added: --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
+            
+            warn_timing_template_override
             ;;
         5)
             prompt_input "Enter maximum retries: " retries
             if [[ "$retries" =~ ^[0-9]+$ ]]; then
+                # Remove any existing max-retries setting
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--max-retries [0-9]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --max-retries $retries"
+                custom_timing_set=true
                 echo "Added: --max-retries $retries"
+                
+                warn_timing_template_override
             else
                 echo "Error: Maximum retries must be a positive integer."
             fi
             ;;
         6)
-            prompt_input "Enter host timeout (e.g., 30ms, 1s): " timeout
-            if [[ "$timeout" =~ ^[0-9]+(ms|s)$ ]]; then
+            prompt_input "Enter host timeout (e.g., 30ms, 1s, 5m, 1h): " timeout
+            if [[ "$timeout" =~ ^[0-9]+(ms|s|m|h)$ ]]; then
+                # Remove any existing host-timeout setting
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--host-timeout [0-9]+(ms|s|m|h)//g' | sed 's/  / /g')
+                
                 nmap_args+=" --host-timeout $timeout"
+                custom_timing_set=true
                 echo "Added: --host-timeout $timeout"
+                
+                warn_timing_template_override
             else
-                echo "Error: Host timeout must be a positive number followed by 'ms' or 's' (e.g., 30ms, 1s)."
+                echo "Error: Host timeout must be a positive number followed by 'ms', 's', 'm', or 'h' (e.g., 30ms, 5s, 10m, 1h)."
             fi
             ;;
         7)
             prompt_input "Enter scan delay (e.g., 30ms, 1s): " scan_delay
             prompt_input "Enter maximum scan delay (e.g., 30ms, 1s): " max_scan_delay
-            if [[ "$scan_delay" =~ ^[0-9]+(ms|s)$ && "$max_scan_delay" =~ ^[0-9]+(ms|s)$ ]]; then
-                nmap_args+=" --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
-                echo "Added: --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
-            else
+            
+            # Validate format
+            if [[ ! "$scan_delay" =~ ^[0-9]+(ms|s)$ || ! "$max_scan_delay" =~ ^[0-9]+(ms|s)$ ]]; then
                 echo "Error: Scan delays must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
+                continue
             fi
+            
+            # Convert values to milliseconds for comparison
+            local delay_ms=$(convert_to_ms "$scan_delay")
+            local max_delay_ms=$(convert_to_ms "$max_scan_delay")
+            
+            if [ $delay_ms -gt $max_delay_ms ]; then
+                echo "Error: Scan delay cannot be greater than maximum scan delay."
+                continue
+            fi
+            
+            # Check for conflicts with packet rate options
+            if [[ "$nmap_args" == *"--min-rate"* || "$nmap_args" == *"--max-rate"* ]]; then
+                echo "Warning: Scan delay options conflict with packet rate options (--min-rate, --max-rate)."
+                echo "Using both can produce unpredictable results."
+                read -p "Continue anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+            fi
+            
+            # Remove any existing scan delay settings
+            nmap_args=$(echo "$nmap_args" | sed -E 's/--scan-delay [0-9]+(ms|s)//g' | sed -E 's/--max-scan-delay [0-9]+(ms|s)//g' | sed 's/  / /g')
+            
+            nmap_args+=" --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
+            custom_timing_set=true
+            echo "Added: --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
+            
+            warn_timing_template_override
             ;;
         8)
-            prompt_input "Enter minimum packet rate: " min_rate
+            prompt_input "Enter minimum packet rate (packets per second): " min_rate
             if [[ "$min_rate" =~ ^[0-9]+$ ]]; then
+                # Check for conflicts with scan delay options
+                if [[ "$nmap_args" == *"--scan-delay"* || "$nmap_args" == *"--max-scan-delay"* ]]; then
+                    echo "Warning: Packet rate options conflict with scan delay options (--scan-delay, --max-scan-delay)."
+                    echo "Using both can produce unpredictable results."
+                    read -p "Continue anyway? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                fi
+                
+                # Check for conflict with max-rate
+                if [[ "$nmap_args" == *"--max-rate"* ]]; then
+                    local max_rate=$(echo "$nmap_args" | grep -oE -- "--max-rate [0-9]+" | awk '{print $2}')
+                    if [ "$min_rate" -gt "$max_rate" ]; then
+                        echo "Error: Minimum packet rate ($min_rate) cannot be greater than maximum packet rate ($max_rate)."
+                        continue
+                    fi
+                fi
+                
+                # Remove any existing min-rate setting
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--min-rate [0-9]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --min-rate $min_rate"
+                custom_timing_set=true
                 echo "Added: --min-rate $min_rate"
+                
+                warn_timing_template_override
             else
                 echo "Error: Minimum packet rate must be a positive integer."
             fi
             ;;
         9)
-            prompt_input "Enter maximum packet rate: " max_rate
+            prompt_input "Enter maximum packet rate (packets per second): " max_rate
             if [[ "$max_rate" =~ ^[0-9]+$ ]]; then
+                # Check for conflicts with scan delay options
+                if [[ "$nmap_args" == *"--scan-delay"* || "$nmap_args" == *"--max-scan-delay"* ]]; then
+                    echo "Warning: Packet rate options conflict with scan delay options (--scan-delay, --max-scan-delay)."
+                    echo "Using both can produce unpredictable results."
+                    read -p "Continue anyway? (y/n): " confirm
+                    if [[ "$confirm" != "y" ]]; then
+                        continue
+                    fi
+                fi
+                
+                # Check for conflict with min-rate
+                if [[ "$nmap_args" == *"--min-rate"* ]]; then
+                    local min_rate=$(echo "$nmap_args" | grep -oE -- "--min-rate [0-9]+" | awk '{print $2}')
+                    if [ "$min_rate" -gt "$max_rate" ]; then
+                        echo "Error: Minimum packet rate ($min_rate) cannot be greater than maximum packet rate ($max_rate)."
+                        continue
+                    fi
+                fi
+                
+                # Remove any existing max-rate setting
+                nmap_args=$(echo "$nmap_args" | sed -E 's/--max-rate [0-9]+//g' | sed 's/  / /g')
+                
                 nmap_args+=" --max-rate $max_rate"
+                custom_timing_set=true
                 echo "Added: --max-rate $max_rate"
+                
+                warn_timing_template_override
             else
                 echo "Error: Maximum packet rate must be a positive integer."
             fi
             ;;
         10)
+            # Reset all timing options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-T[0-5]//g' | 
+                sed -E 's/--min-hostgroup [0-9]+//g' | sed -E 's/--max-hostgroup [0-9]+//g' |
+                sed -E 's/--min-parallelism [0-9]+//g' | sed -E 's/--max-parallelism [0-9]+//g' |
+                sed -E 's/--initial-rtt-timeout [0-9]+(ms|s)//g' | sed -E 's/--min-rtt-timeout [0-9]+(ms|s)//g' | sed -E 's/--max-rtt-timeout [0-9]+(ms|s)//g' |
+                sed -E 's/--max-retries [0-9]+//g' |
+                sed -E 's/--host-timeout [0-9]+(ms|s|m|h)//g' |
+                sed -E 's/--scan-delay [0-9]+(ms|s)//g' | sed -E 's/--max-scan-delay [0-9]+(ms|s)//g' |
+                sed -E 's/--min-rate [0-9]+//g' | sed -E 's/--max-rate [0-9]+//g' |
+                sed 's/  / /g')
+            timing_template_set=false
+            custom_timing_set=false
+            echo "All timing options have been reset."
+            ;;
+        11)
             return_to_menu
             break
             ;;
@@ -1585,6 +1896,139 @@ configure_timing_performance() {
     done
 }
 
+# Helper function to convert time values to milliseconds for comparison
+convert_to_ms() {
+    local time_value="$1"
+    local number=$(echo "$time_value" | sed -E 's/[^0-9]//g')
+    local unit=$(echo "$time_value" | sed -E 's/[0-9]//g')
+    
+    if [[ "$unit" == "s" ]]; then
+        echo $((number * 1000))
+    else
+        echo "$number"
+    fi
+}
+
+# Helper function to warn about timing template override
+warn_timing_template_override() {
+    if $timing_template_set; then
+        echo "Warning: Custom timing options will override settings from timing template (-T)."
+    fi
+}
+
+# Improved OS Detection Menu
+configure_os_detection() {
+    local os_detection_enabled=false
+    
+    while true; do
+        clear
+        echo "OS Detection Menu:"
+        echo "1. Enable OS detection (-O)"
+        echo "2. Limit OS detection to promising targets (--osscan-limit)"
+        echo "3. Guess OS more aggressively (--osscan-guess)"
+        echo "4. Reset OS detection options"
+        echo "5. Go back to Main Menu"
+        echo
+        echo "Current OS detection options: $(filter_nmap_args '-O|--osscan-')"
+        echo
+        
+        # Check if appropriate scan types are configured
+        if $os_detection_enabled; then
+            check_os_detection_compatibility
+        fi
+        
+        read -p "Select an option: " choice
+
+        case $choice in
+        1)
+            # Check if port scan is configured
+            if ! has_port_scan; then
+                echo "Warning: OS detection works best with port scanning enabled."
+                echo "For accurate results, OS detection needs at least one open and one closed port."
+                echo "Consider adding a port scan option (e.g., -sS, -sT) before enabling OS detection."
+                read -p "Enable OS detection anyway? (y/n): " confirm
+                if [[ "$confirm" != "y" ]]; then
+                    continue
+                fi
+            fi
+            
+            nmap_args+=" -O"
+            os_detection_enabled=true
+            echo "Added: -O"
+            ;;
+        2)
+            if ! $os_detection_enabled; then
+                echo "Error: You must enable OS detection first (option 1)."
+                continue
+            fi
+            
+            nmap_args+=" --osscan-limit"
+            echo "Added: --osscan-limit"
+            ;;
+        3)
+            if ! $os_detection_enabled; then
+                echo "Error: You must enable OS detection first (option 1)."
+                continue
+            fi
+            
+            nmap_args+=" --osscan-guess"
+            echo "Added: --osscan-guess"
+            ;;
+        4)
+            # Reset OS detection options
+            nmap_args=$(echo "$nmap_args" | sed -E 's/-O|--osscan-(limit|guess)//g' | sed 's/  / /g')
+            os_detection_enabled=false
+            echo "All OS detection options have been reset."
+            ;;
+        5)
+            return_to_menu
+            break
+            ;;
+        "-h"|"--help")
+            display_help
+            ;;
+        *)
+            invalid_input
+            ;;
+        esac
+        read -p "Press Enter to continue..."
+    done
+}
+
+# Helper function to check if OS detection will work with current scan configuration
+check_os_detection_compatibility() {
+    local has_ping=false
+    local has_port_scan=false
+    
+    # Check for ping options
+    if [[ "$nmap_args" == *"-P"* || "$nmap_args" != *"-Pn"* ]]; then
+        has_ping=true
+    fi
+    
+    # Check for port scan options
+    if has_port_scan; then
+        has_port_scan=true
+    fi
+    
+    if ! $has_ping && ! $has_port_scan; then
+        echo "WARNING: OS detection may fail without host discovery (ping) or port scanning."
+        echo "Consider enabling a port scan option (e.g., -sS, -sT) for better results."
+        echo
+    elif [[ "$nmap_args" == *"-Pn"* ]] && ! $has_port_scan; then
+        echo "WARNING: OS detection may fail with ping disabled (-Pn) and no port scan configured."
+        echo "Consider enabling a port scan option (e.g., -sS, -sT) for better results."
+        echo
+    fi
+}
+
+# Helper function to check if any port scan options are enabled
+has_port_scan() {
+    if [[ "$nmap_args" == *"-s"* ]]; then
+        return 0  # True
+    else
+        return 1  # False
+    fi
+}
 
 # configure_firewall_evasion() {
 #     local evasion_options=""
