@@ -1,6 +1,16 @@
 
 #!/bin/bash
 
+# Nmap Architect - Advanced Nmap Command Builder
+# Version: 2.0.0
+# Author: Muhammad Hassan
+# Description: Interactive tool to build complex Nmap commands with ease
+# GitHub: https://github.com/muhammad-hassan31144/nmap-architect
+
+# Version information
+NMAP_ARCHITECT_VERSION="2.0.0"
+NMAP_ARCHITECT_BUILD="$(date '+%Y%m%d')"
+
 # Global variable to accumulate Nmap arguments
 nmap_args=""
 
@@ -168,58 +178,153 @@ show_active_options() {
 # Function to display help information
 display_help() {
     clear
-    echo "---------------------------------------------------------"
-    echo "Nmap Architect - Advanced Nmap Command Builder"
-    echo "---------------------------------------------------------"
+    echo "╔═══════════════════════════════════════════════════════════════════════════════╗"
+    echo "║                      🆘 NMAP ARCHITECT HELP SYSTEM 🆘                        ║"
+    echo "╚═══════════════════════════════════════════════════════════════════════════════╝"
     echo
-    echo "Usage: $0 [OPTIONS]"
+    echo "📖 ABOUT NMAP ARCHITECT v$NMAP_ARCHITECT_VERSION"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo "Advanced interactive Nmap command builder for network reconnaissance,"
+    echo "penetration testing, and security auditing. Build complex scans with ease!"
     echo
-    echo "Options:"
-    echo "  -h, --help    Display this help menu and exit"
+    echo "🚀 USAGE: $0 [OPTIONS]"
     echo
-    echo "Description:"
-    echo "  Nmap Architect is an interactive tool to build and execute complex Nmap commands."
-    echo "  Select options from various categories to construct your scan, then run it with ease."
+    echo "🛠️  COMMAND LINE OPTIONS:"
+    echo "  -h, --help           Display this help menu and exit"
     echo
-    echo "Main Menu Options:"
-    echo "  1. Target Specification      - Set targets (e.g., IP, file, random hosts)"
-    echo "  2. Host Discovery           - Configure host discovery methods"
-    echo "  3. Scan Techniques         - Choose scan types (e.g., -sS, -sT, -sU)"
-    echo "  4. Port Specification      - Define port ranges and scan order"
-    echo "  5. Service/Version Detection - Detect services and versions on ports"
-    echo "  6. OS Detection            - Identify operating systems"
-    echo "  7. Timing and Performance  - Optimize scan timing and performance"
-    echo "  8. Firewall/IDS Evasion    - Configure evasion techniques"
-    echo "  9. Miscellaneous Options   - Additional Nmap options"
-    echo " 10. Output Configuration    - Set output formats and verbosity"
-    echo " 11. View Current Command    - Display the constructed Nmap command"
-    echo " 12. View Active Options      - Show currently selected options"
-    echo " 13. Reset Command          - Clear all selected options"
-    echo " 14. Run Nmap Scan         - Execute the built command"
-    echo " 15. Exit                  - Quit the tool"
+    echo "🎯 MAIN MENU OVERVIEW:"
+    echo "═══════════════════════════════════════════════════════════════"
     echo
-    echo "Examples:"
-    echo "  1. Run the tool: $0"
-    echo "  2. View help:    $0 --help"
-    echo "  3. Build a command like: nmap -sS -iL targets.txt"
+    echo "🚀 QUICK START:"
+    echo "  📋 Scan Templates       - Pre-built configurations for common scenarios"
+    echo "  🎯 Target Specification - Define what to scan (IPs, networks, files)"
     echo
-    echo "Note: Ensure Nmap is installed before running the tool."
-    echo "---------------------------------------------------------"
-    exit 0
+    echo "🔍 DISCOVERY & SCANNING:"
+    echo "  📡 Host Discovery       - Find live hosts (ping sweeps, ARP, etc.)"
+    echo "  🔓 Scan Techniques      - Choose scan methods (SYN, Connect, UDP, etc.)"
+    echo "  🔌 Port Specification   - Configure port ranges and scanning order"
+    echo "  🔬 Service Detection    - Identify services and their versions"
+    echo "  🖥️  OS Detection        - Operating system fingerprinting"
+    echo
+    echo "🔬 ADVANCED FEATURES:"
+    echo "  🧪 NSE Script Engine    - Vulnerability detection and advanced analysis"
+    echo "  ⏱️  Timing & Performance - Speed vs stealth optimization"
+    echo "  🛡️  Firewall Evasion    - Bypass firewalls and intrusion detection"
+    echo
+    echo "⚙️  CONFIGURATION:"
+    echo "  🔧 Miscellaneous        - Additional Nmap options and settings"
+    echo "  📄 Output Configuration - Results formatting and file output"
+    echo
+    echo "🎯 GETTING STARTED:"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo "1. 🎯 New users: Start with 'Scan Templates' for quick setup"
+    echo "2. 🔧 Advanced users: Build custom scans using individual menus"
+    echo "3. 👁️  Always review your command before execution"
+    echo "4. 🛡️  Ensure you have permission to scan target systems"
+    echo
+    echo "⚠️  IMPORTANT SECURITY NOTES:"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo "• Only scan systems you own or have explicit permission to test"
+    echo "• Some scan types require root/administrator privileges"
+    echo "• Aggressive scans may trigger security alerts"
+    echo "• Be mindful of network impact and timing"
+    echo "• Follow responsible disclosure for any vulnerabilities found"
+    echo
+    echo "🔗 RESOURCES:"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo "• Official Nmap documentation: https://nmap.org/docs.html"
+    echo "• NSE Script documentation: https://nmap.org/nsedoc/"
+    echo "• Nmap Architect GitHub: https://github.com/nmap-architect/nmap-architect"
+    echo
+    echo "💡 Quick Tips:"
+    echo "• Type 'tips' at any menu for scanning best practices"
+    echo "• Use 'Ctrl+C' to interrupt long-running operations"
+    echo "• Templates are great starting points for complex scans"
+    echo
+    read -p "Press Enter to return to the main menu..."
+}
+
+# Tips and Best Practices
+show_tips() {
+    clear
+    echo "💡 NMAP SCANNING TIPS & BEST PRACTICES"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo
+    echo "🎯 TARGET SELECTION:"
+    echo "• Always verify you have permission to scan targets"
+    echo "• Use CIDR notation for network ranges (e.g., 192.168.1.0/24)"
+    echo "• Consider using --exclude to skip sensitive systems"
+    echo "• Test on a small range first, then scale up"
+    echo
+    echo "🚀 SCAN PERFORMANCE:"
+    echo "• Use -T4 for faster scans on reliable networks"
+    echo "• Use -T2 or -T1 for stealth and unreliable connections"
+    echo "• Adjust --min-rate and --max-rate for speed control"
+    echo "• Use -F for fast scans of top 100 ports only"
+    echo
+    echo "🛡️  STEALTH & EVASION:"
+    echo "• Combine multiple evasion techniques for better results"
+    echo "• Use decoys (-D) to blend in with legitimate traffic"
+    echo "• Fragment packets (--mtu) to evade simple firewalls"
+    echo "• Randomize scan order (--randomize-hosts) to avoid patterns"
+    echo
+    echo "🔍 DISCOVERY STRATEGIES:"
+    echo "• Start with host discovery (-sn) to map the network"
+    echo "• Use multiple ping types (-PE -PP -PM) for better coverage"
+    echo "• Disable ping (-Pn) only when necessary (slower but thorough)"
+    echo "• Consider ARP scan (-PR) for local network segments"
+    echo
+    echo "🧪 NSE SCRIPT USAGE:"
+    echo "• Start with 'safe' scripts to avoid service disruption"
+    echo "• Use specific scripts rather than broad categories when possible"
+    echo "• Test scripts in lab environments before production use"
+    echo "• Read script documentation for required arguments"
+    echo
+    echo "📊 OUTPUT & DOCUMENTATION:"
+    echo "• Always save results using -oA for all formats"
+    echo "• Use descriptive filenames with timestamps"
+    echo "• Keep separate directories for different projects"
+    echo "• Document your methodology for repeatable results"
+    echo
+    echo "⚠️  LEGAL & ETHICAL CONSIDERATIONS:"
+    echo "• Only scan systems you own or have written permission to test"
+    echo "• Follow responsible disclosure for vulnerabilities found"
+    echo "• Be aware of local laws regarding security testing"
+    echo "• Consider network impact and bandwidth usage"
+    echo "• Inform network administrators of planned security testing"
+    echo
+    echo "🔧 TROUBLESHOOTING:"
+    echo "• Use -d for debugging output if scans aren't working"
+    echo "• Check firewall rules if getting unexpected results"
+    echo "• Verify target reachability with basic ping first"
+    echo "• Use --packet-trace for detailed packet analysis"
+    echo
+    read -p "Press Enter to continue..."
 }
 
 # Function to display introduction banner
 display_banner() {
     clear
-    echo "====================================="
-    echo "    |\ | ._ *   *. ._   /\  ._ _     "
-    echo "    | \| | | | (_| |_) /--\ | (_     "
-    echo "                   |                 "
-    echo "====================================="
-    echo "    Welcome to Nmap Architect"
-    echo "    Build Nmap Scans Like a Pro"
-    echo "====================================="
-    echo "Type '-h' or '--help' at any time for usage info."
+    echo "╔═══════════════════════════════════════════════════════════════════════════════╗"
+    echo "║  _   _ __  __    _    ____     _             _     _ _            _            ║"
+    echo "║ | \ | |  \/  |  / \  |  _ \   / \   _ __ ___| |__ (_) |_ ___  ___| |_          ║"
+    echo "║ |  \| | |\/| | / _ \ | |_) | / _ \ | '__/ __| '_ \| | __/ _ \/ __| __|         ║"
+    echo "║ | |\  | |  | |/ ___ \|  __/ / ___ \| | | (__| | | | | ||  __/ (__| |_          ║"
+    echo "║ |_| \_|_|  |_/_/   \_\_|   /_/   \_\_|  \___|_| |_|_|\__\___|\___|\__|         ║"
+    echo "║                                                                               ║"
+    echo "║                     🛡️  Advanced Nmap Command Builder  🛡️                     ║"
+    echo "║                         Build Professional Scans with Ease                   ║"
+    echo "║                                                                               ║"
+    echo "║  Version: $NMAP_ARCHITECT_VERSION                               Build: $NMAP_ARCHITECT_BUILD      ║"
+    echo "║                                                                               ║"
+    echo "║  💡 Master Network Reconnaissance • 🔍 Discover Hidden Services              ║"
+    echo "║  🛡️  Evade Firewalls & IDS        • 📊 Generate Professional Reports        ║"
+    echo "║                                                                               ║"
+    echo "╚═══════════════════════════════════════════════════════════════════════════════╝"
+    echo
+    echo "🚀 Welcome, Network Architect! Ready to build your perfect scan?"
+    echo "💡 Type '-h' or '--help' at any time for guidance"
+    echo "📖 Use scan templates for quick starts or build custom scans step by step"
     echo
 }
 
@@ -250,304 +355,326 @@ prompt_input() {
     read -p "$prompt" "$var_name"
 }
 
+# ==========================
+# SECTION: Scan Templates
+# ==========================
+
+# Function to display and select scan templates
+configure_scan_templates() {
+    while true; do
+        clear
+        echo "🎯 SCAN TEMPLATES - Quick Start Your Network Reconnaissance"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo
+        echo "📋 DISCOVERY & RECONNAISSANCE:"
+        echo "1.  🔍 Quick Host Discovery       - Fast ping sweep and basic port check"
+        echo "2.  🌐 Network Topology Scan     - Comprehensive network mapping"
+        echo "3.  🕵️  Stealth Reconnaissance    - Low-profile information gathering"
+        echo
+        echo "🔓 PENETRATION TESTING:"
+        echo "4.  ⚡ Fast Port Scan            - Quick TCP port enumeration"
+        echo "5.  🛡️  Stealth Port Scan         - Evade basic firewall detection"
+        echo "6.  🔬 Comprehensive Scan        - Deep analysis with version detection"
+        echo "7.  🎯 Vulnerability Assessment  - Security-focused scanning"
+        echo
+        echo "🌍 WEB & SERVICES:"
+        echo "8.  🌐 Web Application Scan      - HTTP/HTTPS service analysis"
+        echo "9.  📧 Mail Server Analysis      - SMTP/POP3/IMAP enumeration"
+        echo "10. 🖥️  Remote Access Scan       - SSH/RDP/VNC detection"
+        echo
+        echo "🏢 ENTERPRISE & SPECIALIZED:"
+        echo "11. 🏢 Internal Network Audit    - Comprehensive internal scanning"
+        echo "12. 🌐 External Perimeter Scan   - Public-facing service enumeration"
+        echo "13. 🖨️  Device Discovery Scan     - Printers, IoT, embedded devices"
+        echo "14. ☁️  Cloud Infrastructure     - Cloud service enumeration"
+        echo
+        echo "⚙️  ADVANCED & CUSTOM:"
+        echo "15. 🎛️  Custom Template Builder   - Create your own template"
+        echo "16. 📂 Load Saved Template       - Import previously saved configuration"
+        echo "17. ⬅️  Back to Main Menu"
+        echo
+        echo "═══════════════════════════════════════════════════════════════"
+        read -p "🚀 Select a template to launch your reconnaissance mission: " template_choice
+
+        case $template_choice in
+        1)
+            apply_quick_discovery_template
+            ;;
+        2)
+            apply_network_topology_template
+            ;;
+        3)
+            apply_stealth_recon_template
+            ;;
+        4)
+            apply_fast_port_scan_template
+            ;;
+        5)
+            apply_stealth_port_scan_template
+            ;;
+        6)
+            apply_comprehensive_scan_template
+            ;;
+        7)
+            apply_vulnerability_assessment_template
+            ;;
+        8)
+            apply_web_application_template
+            ;;
+        9)
+            apply_mail_server_template
+            ;;
+        10)
+            apply_remote_access_template
+            ;;
+        11)
+            apply_internal_audit_template
+            ;;
+        12)
+            apply_external_perimeter_template
+            ;;
+        13)
+            apply_device_discovery_template
+            ;;
+        14)
+            apply_cloud_infrastructure_template
+            ;;
+        15)
+            create_custom_template
+            ;;
+        16)
+            load_saved_template
+            ;;
+        17)
+            return_to_menu
+            break
+            ;;
+        "-h"|"--help")
+            display_template_help
+            ;;
+        *)
+            invalid_input
+            ;;
+        esac
+        read -p "Press Enter to continue..."
+    done
+}
+
+# Template application functions
+apply_quick_discovery_template() {
+    nmap_args="-sn --dns-servers 8.8.8.8,1.1.1.1"
+    echo "✅ Quick Host Discovery template applied!"
+    echo "📋 Configuration: Ping sweep with DNS resolution"
+    echo "🎯 Use case: Quickly find live hosts on a network"
+    echo "⚡ Speed: Very Fast"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_network_topology_template() {
+    nmap_args="-sn -PE -PP -PM -PO --traceroute --dns-servers 8.8.8.8,1.1.1.1"
+    echo "✅ Network Topology Scan template applied!"
+    echo "📋 Configuration: Multiple ping types with traceroute"
+    echo "🎯 Use case: Map network topology and routing paths"
+    echo "⚡ Speed: Medium"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_stealth_recon_template() {
+    nmap_args="-sn -PE --disable-arp-ping -T2 --randomize-hosts"
+    echo "✅ Stealth Reconnaissance template applied!"
+    echo "📋 Configuration: Low-profile host discovery"
+    echo "🎯 Use case: Avoid detection during initial reconnaissance"
+    echo "⚡ Speed: Slow (by design)"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_fast_port_scan_template() {
+    nmap_args="-sS -F --min-rate 1000 -T4"
+    echo "✅ Fast Port Scan template applied!"
+    echo "📋 Configuration: SYN scan on top 100 ports"
+    echo "🎯 Use case: Quick port enumeration"
+    echo "⚡ Speed: Very Fast"
+    echo "⚠️  Note: Requires root privileges"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_stealth_port_scan_template() {
+    nmap_args="-sS -p- -T2 --scan-delay 500ms --randomize-hosts -D RND:5"
+    echo "✅ Stealth Port Scan template applied!"
+    echo "📋 Configuration: Slow SYN scan with decoys and delays"
+    echo "🎯 Use case: Evade basic firewall and IDS detection"
+    echo "⚡ Speed: Very Slow (by design)"
+    echo "⚠️  Note: Requires root privileges"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_comprehensive_scan_template() {
+    nmap_args="-sS -sV -O -A --script=default -p- -T4"
+    echo "✅ Comprehensive Scan template applied!"
+    echo "📋 Configuration: Full port range with OS/service detection"
+    echo "🎯 Use case: Complete system analysis and enumeration"
+    echo "⚡ Speed: Slow"
+    echo "⚠️  Note: Requires root privileges, generates significant traffic"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_vulnerability_assessment_template() {
+    nmap_args="-sS -sV --script=vuln,auth,brute -p- -T3"
+    echo "✅ Vulnerability Assessment template applied!"
+    echo "📋 Configuration: Security-focused scanning with vuln scripts"
+    echo "🎯 Use case: Identify potential security vulnerabilities"
+    echo "⚡ Speed: Medium-Slow"
+    echo "⚠️  Note: May trigger security alerts, use responsibly"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_web_application_template() {
+    nmap_args="-sS -sV --script=http-* -p 80,443,8080,8443,8000,8888,9000 -T4"
+    echo "✅ Web Application Scan template applied!"
+    echo "📋 Configuration: Web-focused scanning with HTTP scripts"
+    echo "🎯 Use case: Analyze web servers and applications"
+    echo "⚡ Speed: Medium"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_mail_server_template() {
+    nmap_args="-sS -sV --script=smtp-*,pop3-*,imap-* -p 25,110,143,465,587,993,995 -T4"
+    echo "✅ Mail Server Analysis template applied!"
+    echo "📋 Configuration: Mail service enumeration and testing"
+    echo "🎯 Use case: Analyze email server configurations"
+    echo "⚡ Speed: Medium"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_remote_access_template() {
+    nmap_args="-sS -sV --script=ssh-*,rdp-*,vnc-* -p 22,3389,5900,5901,5902,23 -T4"
+    echo "✅ Remote Access Scan template applied!"
+    echo "📋 Configuration: Remote administration service analysis"
+    echo "🎯 Use case: Identify remote access services and configurations"
+    echo "⚡ Speed: Medium"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_internal_audit_template() {
+    nmap_args="-sS -sV -O --script=default,discovery,safe -p- --exclude-ports 1-20 -T3"
+    echo "✅ Internal Network Audit template applied!"
+    echo "📋 Configuration: Comprehensive internal network scanning"
+    echo "🎯 Use case: Security audit of internal infrastructure"
+    echo "⚡ Speed: Slow"
+    echo "⚠️  Note: Designed for internal networks you own/manage"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_external_perimeter_template() {
+    nmap_args="-sS -sV --top-ports 1000 --script=banner,http-title -T3 --randomize-hosts"
+    echo "✅ External Perimeter Scan template applied!"
+    echo "📋 Configuration: External-facing service enumeration"
+    echo "🎯 Use case: Assess public-facing security posture"
+    echo "⚡ Speed: Medium"
+    echo "⚠️  Note: Only scan systems you own or have permission to test"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_device_discovery_template() {
+    nmap_args="-sS -sV --script=snmp-*,upnp-* -p 161,1900,8080,80,443,23,22,515,9100 -T4"
+    echo "✅ Device Discovery Scan template applied!"
+    echo "📋 Configuration: IoT, printer, and embedded device detection"
+    echo "🎯 Use case: Inventory network devices and appliances"
+    echo "⚡ Speed: Medium"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+apply_cloud_infrastructure_template() {
+    nmap_args="-sS -sV --script=cloud-*,ssl-*,http-title --top-ports 100 -T4"
+    echo "✅ Cloud Infrastructure template applied!"
+    echo "📋 Configuration: Cloud service and SSL certificate analysis"
+    echo "🎯 Use case: Assess cloud infrastructure and services"
+    echo "⚡ Speed: Medium"
+    echo
+    echo "Current command: nmap $nmap_args [target]"
+}
+
+create_custom_template() {
+    echo "🎛️ Custom Template Builder"
+    echo "═════════════════════════════"
+    echo "Build your own scan template by selecting individual components:"
+    echo
+    echo "This will take you through the regular menu system."
+    echo "After configuring your scan, you can save it as a template."
+    echo
+    echo "Continue to main menu to build your custom scan..."
+    sleep 2
+}
+
+load_saved_template() {
+    echo "📂 Load Saved Template"
+    echo "═══════════════════════"
+    echo "Feature coming soon: Load previously saved scan configurations"
+    echo "This will allow you to save and reuse complex scan setups."
+    sleep 2
+}
+
+display_template_help() {
+    clear
+    echo "🆘 SCAN TEMPLATES HELP"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo
+    echo "📖 WHAT ARE SCAN TEMPLATES?"
+    echo "Scan templates are pre-configured Nmap command combinations"
+    echo "designed for specific use cases. They save time and ensure"
+    echo "you're using appropriate scan techniques for your objectives."
+    echo
+    echo "🎯 CHOOSING THE RIGHT TEMPLATE:"
+    echo
+    echo "🔍 DISCOVERY TEMPLATES - Use when you need to:"
+    echo "   • Find live hosts on a network"
+    echo "   • Map network topology"
+    echo "   • Perform stealthy reconnaissance"
+    echo
+    echo "🔓 PENETRATION TESTING - Use when you need to:"
+    echo "   • Quickly enumerate open ports"
+    echo "   • Perform comprehensive security analysis"
+    echo "   • Identify vulnerabilities"
+    echo
+    echo "🌐 SERVICE-SPECIFIC - Use when targeting:"
+    echo "   • Web applications and HTTP services"
+    echo "   • Mail servers (SMTP, POP3, IMAP)"
+    echo "   • Remote access services (SSH, RDP)"
+    echo
+    echo "🏢 ENTERPRISE SCANNING - Use for:"
+    echo "   • Internal network security audits"
+    echo "   • External perimeter assessments"
+    echo "   • Device and asset discovery"
+    echo
+    echo "⚠️  IMPORTANT NOTES:"
+    echo "   • Always ensure you have permission to scan target systems"
+    echo "   • Some templates require root/administrator privileges"
+    echo "   • Consider network impact and scan timing"
+    echo "   • Templates can be customized after application"
+    echo
+    echo "💡 TIP: Start with a template closest to your needs,"
+    echo "        then customize using the individual menus!"
+    echo
+    read -p "Press Enter to return to template selection..."
+}
 
 
 # ==========================
-# SECTION: Configuration Menus
+# SECTION: Menu Functions
 # ==========================
-
-# Target Specification Menu
-# configure_target_specification() {
-#     while true; do
-#         clear
-#         echo "Target Specification Menu:"
-#         echo "1. Input single IP/hostname"
-#         echo "2. Input from list of hosts/networks (-iL)"
-#         echo "3. Choose random targets (-iR)"
-#         echo "4. Exclude hosts/networks (--exclude)"
-#         echo "5. Exclude list from file (--excludefile)"
-#         echo "6. Go back to Main Menu"
-#         read -p "Select an option: " choice
-#         case $choice in
-#         1)
-#             prompt_input "Enter target IP address or hostname: " target
-#             if [[ -n "$target" ]]; then
-#                 nmap_args+=" $target"
-#                 echo "Added target: $target"
-#             else
-#                 echo "Error: Target cannot be empty."
-#             fi
-#             ;;
-#         2)
-#             prompt_input "Enter filename containing target hosts/networks: " filename
-#             if [[ -f "$filename" ]]; then
-#                 nmap_args+=" -iL $filename"
-#                 echo "Added: -iL $filename"
-#             else
-#                 echo "Error: File '$filename' not found!"
-#                 echo "Note: If the file is in the same directory as this script, simply use the filename (e.g., 'targets.txt')."
-#             fi
-#             ;;
-#         3)
-#             prompt_input "Enter the number of random hosts to scan: " num_hosts
-#             if [[ "$num_hosts" =~ ^[0-9]+$ && "$num_hosts" -gt 0 ]]; then
-#                 nmap_args+=" -iR $num_hosts"
-#                 echo "Added: -iR $num_hosts"
-#             else
-#                 echo "Error: Number of hosts must be a positive integer."
-#             fi
-#             ;;
-#         4)
-#             prompt_input "Enter hosts/networks to exclude (comma-separated): " exclude_list
-#             if [[ -n "$exclude_list" ]]; then
-#                 nmap_args+=" --exclude $exclude_list"
-#                 echo "Added: --exclude $exclude_list"
-#             else
-#                 echo "Error: Exclude list cannot be empty."
-#             fi
-#             ;;
-#         5)
-#             prompt_input "Enter filename containing exclude list: " exclude_file
-#             if [[ -f "$exclude_file" ]]; then
-#                 nmap_args+=" --excludefile $exclude_file"
-#                 echo "Added: --excludefile $exclude_file"
-#             else
-#                 echo "Error: File '$exclude_file' not found!"
-#                 echo "Note: If the file is in the same directory as this script, simply use the filename (e.g., 'excludes.txt')."
-#             fi
-#             ;;
-#         6)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
-
-
-# Host Discovery Menu
-# configure_host_discovery() {
-#     while true; do
-#         clear
-#         echo "Host Discovery Menu:"
-#         echo "1. List Scan (-sL)"
-#         echo "2. Ping Scan (-sn)"
-#         echo "3. Treat all hosts as online (-Pn)"
-#         echo "4. TCP SYN/ACK, UDP, or SCTP discovery to given ports (-PS/PA/PU/PY)"
-#         echo "5. ICMP echo, timestamp, and netmask request probes (-PE/PP/PM)"
-#         echo "6. Go back to Main Menu"
-#         read -p "Select an option: " choice
-
-#         case $choice in
-#         1)
-#             nmap_args+=" -sL"
-#             echo "Added: -sL"
-#             ;;
-#         2)
-#             nmap_args+=" -sn"
-#             echo "Added: -sn"
-#             ;;
-#         3)
-#             nmap_args+=" -Pn"
-#             echo "Added: -Pn"
-#             ;;
-#         4)
-#             prompt_input "Enter port list for discovery (e.g., 22,80,443): " ports
-#             if [[ -n "$ports" ]]; then
-#                 clear
-#                 echo "Select discovery type for ports: $ports"
-#                 echo "1. TCP SYN (-PS)"
-#                 echo "2. TCP ACK (-PA)"
-#                 echo "3. UDP (-PU)"
-#                 echo "4. SCTP (-PY)"
-#                 read -p "Choose a discovery type: " type_choice
-#                 case $type_choice in
-#                 1)
-#                     nmap_args+=" -PS$ports"
-#                     echo "Added: -PS$ports"
-#                     ;;
-#                 2)
-#                     nmap_args+=" -PA$ports"
-#                     echo "Added: -PA$ports"
-#                     ;;
-#                 3)
-#                     nmap_args+=" -PU$ports"
-#                     echo "Added: -PU$ports"
-#                     ;;
-#                 4)
-#                     nmap_args+=" -PY$ports"
-#                     echo "Added: -PY$ports"
-#                     ;;
-#                 *)
-#                     echo "Error: Invalid discovery type."
-#                     ;;
-#                 esac
-#             else
-#                 echo "Error: Port list cannot be empty."
-#             fi
-#             ;;
-#         5)
-#             clear
-#             echo "Select ICMP probe type:"
-#             echo "1. Echo request (-PE)"
-#             echo "2. Timestamp request (-PP)"
-#             echo "3. Netmask request (-PM)"
-#             read -p "Choose an ICMP probe type: " icmp_choice
-#             case $icmp_choice in
-#             1)
-#                 nmap_args+=" -PE"
-#                 echo "Added: -PE"
-#                 ;;
-#             2)
-#                 nmap_args+=" -PP"
-#                 echo "Added: -PP"
-#                 ;;
-#             3)
-#                 nmap_args+=" -PM"
-#                 echo "Added: -PM"
-#                 ;;
-#             *)
-#                 echo "Error: Invalid ICMP probe type."
-#                 ;;
-#             esac
-#             ;;
-#         6)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
-
-
-# Scan Techniques Menu
-# configure_scan_techniques() {
-#     while true; do
-#         clear
-#         echo "Scan Techniques Menu:"
-#         echo "1. TCP SYN Scan (-sS)"
-#         echo "2. TCP Connect Scan (-sT)"
-#         echo "3. TCP ACK Scan (-sA)"
-#         echo "4. TCP Window Scan (-sW)"
-#         echo "5. TCP Maimon Scan (-sM)"
-#         echo "6. UDP Scan (-sU)"
-#         echo "7. TCP Null Scan (-sN)"
-#         echo "8. TCP FIN Scan (-sF)"
-#         echo "9. TCP Xmas Scan (-sX)"
-#         echo "10. Customize TCP Scan Flags (--scanflags)"
-#         echo "11. Idle Scan (-sI)"
-#         echo "12. SCTP INIT Scan (-sY)"
-#         echo "13. SCTP COOKIE-ECHO Scan (-sZ)"
-#         echo "14. IP Protocol Scan (-sO)"
-#         echo "15. FTP Bounce Scan (-b)"
-#         echo "16. Go back to Main Menu"
-#         read -p "Select an option: " choice
-
-#         case $choice in
-#         1)
-#             nmap_args+=" -sS"
-#             echo "Added: -sS"
-#             ;;
-#         2)
-#             nmap_args+=" -sT"
-#             echo "Added: -sT"
-#             ;;
-#         3)
-#             nmap_args+=" -sA"
-#             echo "Added: -sA"
-#             ;;
-#         4)
-#             nmap_args+=" -sW"
-#             echo "Added: -sW"
-#             ;;
-#         5)
-#             nmap_args+=" -sM"
-#             echo "Added: -sM"
-#             ;;
-#         6)
-#             nmap_args+=" -sU"
-#             echo "Added: -sU"
-#             ;;
-#         7)
-#             nmap_args+=" -sN"
-#             echo "Added: -sN"
-#             ;;
-#         8)
-#             nmap_args+=" -sF"
-#             echo "Added: -sF"
-#             ;;
-#         9)
-#             nmap_args+=" -sX"
-#             echo "Added: -sX"
-#             ;;
-#         10)
-#             prompt_input "Enter custom TCP flags (e.g., SYN,ACK,FIN): " flags
-#             if [[ -n "$flags" ]]; then
-#                 nmap_args+=" --scanflags $flags"
-#                 echo "Added: --scanflags $flags"
-#             else
-#                 echo "Error: TCP flags cannot be empty."
-#             fi
-#             ;;
-#         11)
-#             prompt_input "Enter zombie host (format: host[:probeport]): " zombie
-#             if [[ -n "$zombie" ]]; then
-#                 nmap_args+=" -sI $zombie"
-#                 echo "Added: -sI $zombie"
-#             else
-#                 echo "Error: Zombie host cannot be empty."
-#             fi
-#             ;;
-#         12)
-#             nmap_args+=" -sY"
-#             echo "Added: -sY"
-#             ;;
-#         13)
-#             nmap_args+=" -sZ"
-#             echo "Added: -sZ"
-#             ;;
-#         14)
-#             nmap_args+=" -sO"
-#             echo "Added: -sO"
-#             ;;
-#         15)
-#             prompt_input "Enter FTP relay host: " ftp_host
-#             if [[ -n "$ftp_host" ]]; then
-#                 nmap_args+=" -b $ftp_host"
-#                 echo "Added: -b $ftp_host"
-#             else
-#                 echo "Error: FTP relay host cannot be empty."
-#             fi
-#             ;;
-#         16)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
-# Target Specification Menu
 configure_target_specification() {
     local target_specified=false
     
@@ -608,7 +735,7 @@ configure_target_specification() {
                     nmap_args=$(echo "$nmap_args" | sed -E 's/-iL [^ ]+//g' | sed -E 's/-iR [0-9]+//g' | sed 's/  / /g')
                     # Also try to remove IP addresses/hostnames (this is simplistic but helps)
                     nmap_args=$(echo "$nmap_args" | sed -E 's/([0-9]{1,3}\.){3}[0-9]{1,3}//g' | sed -E 's/[a-zA-Z0-9][a-zA-Z0-9\.-]+//g' | sed 's/  / /g')
-                }
+                fi
                 
                 nmap_args+=" -iL $filename"
                 target_specified=true
@@ -633,7 +760,7 @@ configure_target_specification() {
                     nmap_args=$(echo "$nmap_args" | sed -E 's/-iL [^ ]+//g' | sed -E 's/-iR [0-9]+//g' | sed 's/  / /g')
                     # Also try to remove IP addresses/hostnames (this is simplistic but helps)
                     nmap_args=$(echo "$nmap_args" | sed -E 's/([0-9]{1,3}\.){3}[0-9]{1,3}//g' | sed -E 's/[a-zA-Z0-9][a-zA-Z0-9\.-]+//g' | sed 's/  / /g')
-                }
+                fi
                 
                 nmap_args+=" -iR $num_hosts"
                 target_specified=true
@@ -743,7 +870,7 @@ configure_host_discovery() {
                 read -p "Continue anyway? (y/n): " confirm
                 if [[ "$confirm" != "y" ]]; then
                     continue
-                }
+                fi
             fi
             
             # Remove any existing ping scan option
@@ -1138,79 +1265,7 @@ check_scan_conflicts() {
 
 
 
-# Port Specification Menu
-# configure_port_specification() {
-#     while true; do
-#         clear
-#         echo "Port Specification Menu:"
-#         echo "1. Scan specific port ranges (-p)"
-#         echo "2. Exclude specific port ranges (--exclude-ports)"
-#         echo "3. Fast mode (-F)"
-#         echo "4. Scan ports sequentially (-r)"
-#         echo "5. Scan top N most common ports (--top-ports)"
-#         echo "6. Scan ports more common than a ratio (--port-ratio)"
-#         echo "7. Go back to Main Menu"
-#         read -p "Select an option: " choice
 
-#         case $choice in
-#         1)
-#             prompt_input "Enter port ranges (e.g., 22; 1-65535; U:53,111,T:21-25): " ports
-#             if [[ -n "$ports" ]]; then
-#                 nmap_args+=" -p $ports"
-#                 echo "Added: -p $ports"
-#             else
-#                 echo "Error: Port ranges cannot be empty."
-#             fi
-#             ;;
-#         2)
-#             prompt_input "Enter ports to exclude (e.g., 80,443): " exclude_ports
-#             if [[ -n "$exclude_ports" ]]; then
-#                 nmap_args+=" --exclude-ports $exclude_ports"
-#                 echo "Added: --exclude-ports $exclude_ports"
-#             else
-#                 echo "Error: Excluded ports cannot be empty."
-#             fi
-#             ;;
-#         3)
-#             nmap_args+=" -F"
-#             echo "Added: -F"
-#             ;;
-#         4)
-#             nmap_args+=" -r"
-#             echo "Added: -r"
-#             ;;
-#         5)
-#             prompt_input "Enter number of top ports to scan: " top_ports
-#             if [[ "$top_ports" =~ ^[0-9]+$ && "$top_ports" -gt 0 && "$top_ports" -le 65535 ]]; then
-#                 nmap_args+=" --top-ports $top_ports"
-#                 echo "Added: --top-ports $top_ports"
-#             else
-#                 echo "Error: Number of top ports must be a positive integer between 1 and 65535."
-#             fi
-#             ;;
-#         6)
-#             prompt_input "Enter port ratio (0.0 to 1.0): " ratio
-#             if [[ "$ratio" =~ ^0\.[0-9]+$ || "$ratio" == "1.0" || "$ratio" == "0.0" ]]; then
-#                 nmap_args+=" --port-ratio $ratio"
-#                 echo "Added: --port-ratio $ratio"
-#             else
-#                 echo "Error: Port ratio must be a decimal between 0.0 and 1.0."
-#             fi
-#             ;;
-#         7)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
 # Port Specification Menu
 configure_port_specification() {
     local port_option_set=false
@@ -1373,217 +1428,7 @@ configure_port_specification() {
     done
 }
 
-# # Service/Version Detection Menu
-# configure_service_detection() {
-#     while true; do
-#         clear
-#         echo "Service/Version Detection Menu:"
-#         echo "1. Probe open ports to determine service/version info (-sV)"
-#         echo "2. Set version intensity level (--version-intensity)"
-#         echo "3. Limit to most likely probes (light scan) (--version-light)"
-#         echo "4. Try every single probe (intensity 9) (--version-all)"
-#         echo "5. Show detailed version scan activity (--version-trace)"
-#         echo "6. Go back to Main Menu"
-#         read -p "Select an option: " choice
 
-#         case $choice in
-#         1)
-#             nmap_args+=" -sV"
-#             echo "Added: -sV"
-#             ;;
-#         2)
-#             prompt_input "Enter version intensity level (0 to 9): " intensity
-#             if [[ "$intensity" =~ ^[0-9]$ ]]; then
-#                 nmap_args+=" --version-intensity $intensity"
-#                 echo "Added: --version-intensity $intensity"
-#             else
-#                 echo "Error: Intensity level must be a number between 0 and 9."
-#             fi
-#             ;;
-#         3)
-#             nmap_args+=" --version-light"
-#             echo "Added: --version-light"
-#             ;;
-#         4)
-#             nmap_args+=" --version-all"
-#             echo "Added: --version-all"
-#             ;;
-#         5)
-#             nmap_args+=" --version-trace"
-#             echo "Added: --version-trace"
-#             ;;
-#         6)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
-
-# # OS Detection Menu
-# configure_os_detection() {
-#     while true; do
-#         clear
-#         echo "OS Detection Menu:"
-#         echo "1. Enable OS detection (-O)"
-#         echo "2. Limit OS detection to promising targets (--osscan-limit)"
-#         echo "3. Guess OS more aggressively (--osscan-guess)"
-#         echo "4. Go back to Main Menu"
-#         read -p "Select an option: " choice
-
-#         case $choice in
-#         1)
-#             nmap_args+=" -O"
-#             echo "Added: -O"
-#             ;;
-#         2)
-#             nmap_args+=" --osscan-limit"
-#             echo "Added: --osscan-limit"
-#             ;;
-#         3)
-#             nmap_args+=" --osscan-guess"
-#             echo "Added: --osscan-guess"
-#             ;;
-#         4)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
-
-# # Timing and Performance Menu
-# configure_timing_performance() {
-#     while true; do
-#         clear
-#         echo "Timing and Performance Menu:"
-#         echo "1. Set timing template (-T<0-5>)"
-#         echo "2. Set parallel host scan group sizes (--min-hostgroup/max-hostgroup)"
-#         echo "3. Adjust probe parallelization (--min-parallelism/max-parallelism)"
-#         echo "4. Set RTT timeouts (--min-rtt-timeout/max-rtt-timeout/initial-rtt-timeout)"
-#         echo "5. Cap number of retries (--max-retries)"
-#         echo "6. Set host timeout (--host-timeout)"
-#         echo "7. Adjust scan delay (--scan-delay/--max-scan-delay)"
-#         echo "8. Set minimum packet rate (--min-rate)"
-#         echo "9. Set maximum packet rate (--max-rate)"
-#         echo "10. Go back to Main Menu"
-#         read -p "Select an option: " choice
-
-#         case $choice in
-#         1)
-#             prompt_input "Enter timing template (0-5): " timing
-#             if [[ "$timing" =~ ^[0-5]$ ]]; then
-#                 nmap_args+=" -T$timing"
-#                 echo "Added: -T$timing"
-#             else
-#                 echo "Error: Timing template must be a number between 0 and 5."
-#             fi
-#             ;;
-#         2)
-#             prompt_input "Enter minimum host group size: " min_hostgroup
-#             prompt_input "Enter maximum host group size: " max_hostgroup
-#             if [[ "$min_hostgroup" =~ ^[0-9]+$ && "$max_hostgroup" =~ ^[0-9]+$ && "$min_hostgroup" -le "$max_hostgroup" ]]; then
-#                 nmap_args+=" --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
-#                 echo "Added: --min-hostgroup $min_hostgroup --max-hostgroup $max_hostgroup"
-#             else
-#                 echo "Error: Host group sizes must be positive integers, and minimum must not exceed maximum."
-#             fi
-#             ;;
-#         3)
-#             prompt_input "Enter minimum parallel probes: " min_parallelism
-#             prompt_input "Enter maximum parallel probes: " max_parallelism
-#             if [[ "$min_parallelism" =~ ^[0-9]+$ && "$max_parallelism" =~ ^[0-9]+$ && "$min_parallelism" -le "$max_parallelism" ]]; then
-#                 nmap_args+=" --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
-#                 echo "Added: --min-parallelism $min_parallelism --max-parallelism $max_parallelism"
-#             else
-#                 echo "Error: Parallelism values must be positive integers, and minimum must not exceed maximum."
-#             fi
-#             ;;
-#         4)
-#             prompt_input "Enter initial RTT timeout (e.g., 30ms, 1s): " initial_rtt
-#             prompt_input "Enter minimum RTT timeout (e.g., 30ms, 1s): " min_rtt
-#             prompt_input "Enter maximum RTT timeout (e.g., 30ms, 1s): " max_rtt
-#             if [[ "$initial_rtt" =~ ^[0-9]+(ms|s)$ && "$min_rtt" =~ ^[0-9]+(ms|s)$ && "$max_rtt" =~ ^[0-9]+(ms|s)$ ]]; then
-#                 nmap_args+=" --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
-#                 echo "Added: --initial-rtt-timeout $initial_rtt --min-rtt-timeout $min_rtt --max-rtt-timeout $max_rtt"
-#             else
-#                 echo "Error: RTT timeouts must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
-#             fi
-#             ;;
-#         5)
-#             prompt_input "Enter maximum retries: " retries
-#             if [[ "$retries" =~ ^[0-9]+$ ]]; then
-#                 nmap_args+=" --max-retries $retries"
-#                 echo "Added: --max-retries $retries"
-#             else
-#                 echo "Error: Maximum retries must be a positive integer."
-#             fi
-#             ;;
-#         6)
-#             prompt_input "Enter host timeout (e.g., 30ms, 1s): " timeout
-#             if [[ "$timeout" =~ ^[0-9]+(ms|s)$ ]]; then
-#                 nmap_args+=" --host-timeout $timeout"
-#                 echo "Added: --host-timeout $timeout"
-#             else
-#                 echo "Error: Host timeout must be a positive number followed by 'ms' or 's' (e.g., 30ms, 1s)."
-#             fi
-#             ;;
-#         7)
-#             prompt_input "Enter scan delay (e.g., 30ms, 1s): " scan_delay
-#             prompt_input "Enter maximum scan delay (e.g., 30ms, 1s): " max_scan_delay
-#             if [[ "$scan_delay" =~ ^[0-9]+(ms|s)$ && "$max_scan_delay" =~ ^[0-9]+(ms|s)$ ]]; then
-#                 nmap_args+=" --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
-#                 echo "Added: --scan-delay $scan_delay --max-scan-delay $max_scan_delay"
-#             else
-#                 echo "Error: Scan delays must be positive numbers followed by 'ms' or 's' (e.g., 30ms, 1s)."
-#             fi
-#             ;;
-#         8)
-#             prompt_input "Enter minimum packet rate: " min_rate
-#             if [[ "$min_rate" =~ ^[0-9]+$ ]]; then
-#                 nmap_args+=" --min-rate $min_rate"
-#                 echo "Added: --min-rate $min_rate"
-#             else
-#                 echo "Error: Minimum packet rate must be a positive integer."
-#             fi
-#             ;;
-#         9)
-#             prompt_input "Enter maximum packet rate: " max_rate
-#             if [[ "$max_rate" =~ ^[0-9]+$ ]]; then
-#                 nmap_args+=" --max-rate $max_rate"
-#                 echo "Added: --max-rate $max_rate"
-#             else
-#                 echo "Error: Maximum packet rate must be a positive integer."
-#             fi
-#             ;;
-#         10)
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
 
 # Fixed Timing and Performance Menu
 configure_timing_performance() {
@@ -2030,175 +1875,7 @@ has_port_scan() {
     fi
 }
 
-# configure_firewall_evasion() {
-#     local evasion_options=""
-    
-#     while true; do
-#         clear
-#         echo "Firewall/IDS Evasion Menu:"
-#         echo "1. Fragment packets (--mtu)"
-#         echo "2. Cloak scan with decoys (-D)"
-#         echo "3. Spoof source address (-S)"
-#         echo "4. Use specified interface (-e)"
-#         echo "5. Use a specific source port (-g/--source-port)"
-#         echo "6. Relay connections through proxies (--proxies)"
-#         echo "7. Append custom payload in hex (--data)"
-#         echo "8. Append custom ASCII string (--data-string)"
-#         echo "9. Append random data (--data-length)"
-#         echo "10. Send packets with specific IP options (--ip-options)"
-#         echo "11. Set IP time-to-live (--ttl)"
-#         echo "12. Spoof MAC address (--spoof-mac)"
-#         echo "13. Use bogus checksum (--badsum)"
-#         echo "14. Go back to Main Menu"
-#         echo
-#         echo "Current evasion options: $evasion_options"
-#         echo
-#         read -p "Select an option: " choice
-        
-#         case $choice in
-#         1)
-#             read -p "Enter MTU size for packet fragmentation (8-1500): " mtu_size
-#             if [[ "$mtu_size" =~ ^[0-9]+$ ]] && [ "$mtu_size" -ge 8 ] && [ "$mtu_size" -le 1500 ]; then
-#                 evasion_options="$evasion_options --mtu $mtu_size"
-#                 echo "Packet fragmentation added with MTU size: $mtu_size"
-#             else
-#                 echo "Invalid MTU size. Must be between 8 and 1500."
-#             fi
-#             ;;
-#         2)
-#             read -p "Enter decoy IPs (comma-separated, ME for real IP position): " decoys
-#             if [ -n "$decoys" ]; then
-#                 evasion_options="$evasion_options -D $decoys"
-#                 echo "Decoy scan added with: $decoys"
-#             else
-#                 echo "No decoy IPs provided."
-#             fi
-#             ;;
-#         3)
-#             read -p "Enter IP address to spoof: " spoof_ip
-#             if [[ "$spoof_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-#                 evasion_options="$evasion_options -S $spoof_ip"
-#                 echo "Source address spoofing added with IP: $spoof_ip"
-#             else
-#                 echo "Invalid IP address format."
-#             fi
-#             ;;
-#         4)
-#             read -p "Enter network interface to use: " interface
-#             if [ -n "$interface" ]; then
-#                 evasion_options="$evasion_options -e $interface"
-#                 echo "Interface set to: $interface"
-#             else
-#                 echo "No interface provided."
-#             fi
-#             ;;
-#         5)
-#             read -p "Enter source port number (1-65535): " source_port
-#             if [[ "$source_port" =~ ^[0-9]+$ ]] && [ "$source_port" -ge 1 ] && [ "$source_port" -le 65535 ]; then
-#                 evasion_options="$evasion_options --source-port $source_port"
-#                 echo "Source port set to: $source_port"
-#             else
-#                 echo "Invalid port number. Must be between 1 and 65535."
-#             fi
-#             ;;
-#         6)
-#             read -p "Enter proxy list (comma-separated, format: proto://host:port): " proxies
-#             if [ -n "$proxies" ]; then
-#                 evasion_options="$evasion_options --proxies $proxies"
-#                 echo "Proxy chain set to: $proxies"
-#             else
-#                 echo "No proxies provided."
-#             fi
-#             ;;
-#         7)
-#             read -p "Enter custom payload in hex (e.g., DEADBEEF): " hex_data
-#             if [[ "$hex_data" =~ ^[0-9A-Fa-f]+$ ]]; then
-#                 evasion_options="$evasion_options --data 0x$hex_data"
-#                 echo "Custom hex payload added: 0x$hex_data"
-#             else
-#                 echo "Invalid hex format. Use hexadecimal characters only (0-9, A-F)."
-#             fi
-#             ;;
-#         8)
-#             read -p "Enter custom ASCII string to append: " ascii_data
-#             if [ -n "$ascii_data" ]; then
-#                 # Escape the string for command line use
-#                 ascii_data_escaped=$(printf '%q' "$ascii_data")
-#                 evasion_options="$evasion_options --data-string $ascii_data_escaped"
-#                 echo "Custom ASCII string added: $ascii_data"
-#             else
-#                 echo "No ASCII string provided."
-#             fi
-#             ;;
-#         9)
-#             read -p "Enter length of random data to append (bytes): " data_length
-#             if [[ "$data_length" =~ ^[0-9]+$ ]] && [ "$data_length" -gt 0 ]; then
-#                 evasion_options="$evasion_options --data-length $data_length"
-#                 echo "Random data length set to: $data_length bytes"
-#             else
-#                 echo "Invalid data length. Must be a positive integer."
-#             fi
-#             ;;
-#         10)
-#             echo "IP Options formats:"
-#             echo "  R: Record route"
-#             echo "  T: Timestamp"
-#             echo "  U: Route record"
-#             echo "  S addr: Loose source routing"
-#             echo "  L addr: Strict source routing"
-#             echo "  \hex: Custom hex values"
-#             read -p "Enter IP options: " ip_options
-#             if [ -n "$ip_options" ]; then
-#                 evasion_options="$evasion_options --ip-options \"$ip_options\""
-#                 echo "IP options set to: $ip_options"
-#             else
-#                 echo "No IP options provided."
-#             fi
-#             ;;
-#         11)
-#             read -p "Enter TTL value (1-255): " ttl
-#             if [[ "$ttl" =~ ^[0-9]+$ ]] && [ "$ttl" -ge 1 ] && [ "$ttl" -le 255 ]; then
-#                 evasion_options="$evasion_options --ttl $ttl"
-#                 echo "TTL value set to: $ttl"
-#             else
-#                 echo "Invalid TTL value. Must be between 1 and 255."
-#             fi
-#             ;;
-#         12)
-#             echo "MAC address options:"
-#             echo "  0: Use a random MAC address"
-#             echo "  vendor: Use a random MAC from that vendor"
-#             echo "  MAC: Use the specified MAC address"
-#             read -p "Enter MAC address option: " mac
-#             if [ -n "$mac" ]; then
-#                 evasion_options="$evasion_options --spoof-mac $mac"
-#                 echo "MAC spoofing set to: $mac"
-#             else
-#                 echo "No MAC address option provided."
-#             fi
-#             ;;
-#         13)
-#             evasion_options="$evasion_options --badsum"
-#             echo "Bogus checksum option added"
-#             ;;
-#         14)
-#             # Save evasion options to the global configuration before returning
-#             SCAN_OPTIONS="$SCAN_OPTIONS $evasion_options"
-#             echo "Firewall/IDS evasion options saved: $evasion_options"
-#             echo "Returning to Main Menu..."
-#             return_to_menu
-#             break
-#             ;;
-#         "-h"|"--help")
-#             display_help
-#             ;;
-#         *)
-#             invalid_input
-#             ;;
-#         esac
-#         read -p "Press Enter to continue..."
-#     done
-# }
+
 
 # Service/Version Detection Menu - Fixed Version
 configure_service_detection() {
@@ -2310,6 +1987,357 @@ configure_service_detection() {
 filter_nmap_args() {
     local pattern="$1"
     echo "$nmap_args" | grep -oE "$pattern[^ ]*" || echo "None"
+}
+
+# ==========================
+# SECTION: NSE Script Management
+# ==========================
+
+# NSE Script Management Menu
+configure_nse_scripts() {
+    local script_categories=""
+    local custom_scripts=""
+    local script_args=""
+    
+    while true; do
+        clear
+        echo "🔬 NSE SCRIPT ENGINE MANAGEMENT"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "Nmap Scripting Engine (NSE) - Advanced service and vulnerability detection"
+        echo
+        echo "📚 SCRIPT CATEGORIES:"
+        echo "1.  🛡️  Vulnerability Detection   - Find security vulnerabilities"
+        echo "2.  🔍 Service Discovery         - Detailed service enumeration"
+        echo "3.  🔓 Authentication Testing    - Test weak authentication"
+        echo "4.  💥 Brute Force Attacks       - Password and credential testing"
+        echo "5.  🌐 Web Application Testing   - HTTP/HTTPS specific tests"
+        echo "6.  📧 Mail Server Testing       - SMTP/POP3/IMAP analysis"
+        echo "7.  🗃️  Database Testing          - Database service enumeration"
+        echo "8.  🔐 SSL/TLS Testing           - Certificate and encryption analysis"
+        echo "9.  📂 SMB/NetBIOS Testing       - Windows file sharing analysis"
+        echo "10. 🔧 Safe Scripts Only         - Non-intrusive discovery only"
+        echo
+        echo "🎯 SPECIFIC SCRIPT SELECTION:"
+        echo "11. 📝 Add Custom Scripts        - Specify individual scripts"
+        echo "12. ⚙️  Configure Script Arguments - Set script-specific parameters"
+        echo "13. 📖 Browse Available Scripts  - List all installed NSE scripts"
+        echo "14. 🔍 Search Scripts by Keyword - Find scripts for specific purposes"
+        echo
+        echo "⚙️  MANAGEMENT:"
+        echo "15. 📋 View Current Scripts      - Show selected scripts and arguments"
+        echo "16. 🗑️  Reset All Scripts        - Clear all script selections"
+        echo "17. ⬅️  Back to Main Menu"
+        echo
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "Current scripts: $(get_current_nse_scripts)"
+        echo
+        read -p "🚀 Select script category or management option: " nse_choice
+
+        case $nse_choice in
+        1)
+            add_vulnerability_scripts
+            ;;
+        2)
+            add_discovery_scripts
+            ;;
+        3)
+            add_auth_scripts
+            ;;
+        4)
+            add_brute_scripts
+            ;;
+        5)
+            add_web_scripts
+            ;;
+        6)
+            add_mail_scripts
+            ;;
+        7)
+            add_database_scripts
+            ;;
+        8)
+            add_ssl_scripts
+            ;;
+        9)
+            add_smb_scripts
+            ;;
+        10)
+            add_safe_scripts
+            ;;
+        11)
+            add_custom_scripts
+            ;;
+        12)
+            configure_script_arguments
+            ;;
+        13)
+            browse_available_scripts
+            ;;
+        14)
+            search_scripts
+            ;;
+        15)
+            view_current_scripts
+            ;;
+        16)
+            reset_nse_scripts
+            ;;
+        17)
+            return_to_menu
+            break
+            ;;
+        "-h"|"--help")
+            display_nse_help
+            ;;
+        *)
+            invalid_input
+            ;;
+        esac
+        read -p "Press Enter to continue..."
+    done
+}
+
+# NSE Script Category Functions
+add_vulnerability_scripts() {
+    echo "🛡️ Adding Vulnerability Detection Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=vuln"
+    echo "✅ Added vulnerability detection scripts"
+    echo "⚠️  Warning: These scripts may trigger security alerts"
+    echo "🎯 Use case: Identify known CVEs and security issues"
+}
+
+add_discovery_scripts() {
+    echo "🔍 Adding Service Discovery Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=discovery"
+    echo "✅ Added service discovery scripts"
+    echo "🎯 Use case: Detailed service enumeration and fingerprinting"
+}
+
+add_auth_scripts() {
+    echo "🔓 Adding Authentication Testing Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=auth"
+    echo "✅ Added authentication testing scripts"
+    echo "⚠️  Warning: May attempt authentication against services"
+    echo "🎯 Use case: Test for weak or default authentication"
+}
+
+add_brute_scripts() {
+    echo "💥 Adding Brute Force Scripts..."
+    echo "⚠️  WARNING: Brute force attacks can:"
+    echo "   • Lock out user accounts"
+    echo "   • Trigger security monitoring"
+    echo "   • Be considered malicious activity"
+    read -p "Continue with brute force scripts? (y/n): " confirm
+    if [[ "$confirm" == "y" ]]; then
+        nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+        nmap_args+=" --script=brute"
+        echo "✅ Added brute force scripts"
+        echo "🎯 Use case: Test password strength (use responsibly)"
+    else
+        echo "❌ Brute force scripts not added"
+    fi
+}
+
+add_web_scripts() {
+    echo "🌐 Adding Web Application Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=http-*"
+    echo "✅ Added web application testing scripts"
+    echo "🎯 Use case: HTTP/HTTPS service analysis and testing"
+}
+
+add_mail_scripts() {
+    echo "📧 Adding Mail Server Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=smtp-*,pop3-*,imap-*"
+    echo "✅ Added mail server testing scripts"
+    echo "🎯 Use case: Email service enumeration and configuration analysis"
+}
+
+add_database_scripts() {
+    echo "🗃️ Adding Database Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=mysql-*,ms-sql-*,oracle-*,postgres-*"
+    echo "✅ Added database testing scripts"
+    echo "🎯 Use case: Database service discovery and enumeration"
+}
+
+add_ssl_scripts() {
+    echo "🔐 Adding SSL/TLS Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=ssl-*,tls-*"
+    echo "✅ Added SSL/TLS testing scripts"
+    echo "🎯 Use case: Certificate analysis and encryption testing"
+}
+
+add_smb_scripts() {
+    echo "📂 Adding SMB/NetBIOS Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=smb-*,netbios-*"
+    echo "✅ Added SMB/NetBIOS testing scripts"
+    echo "🎯 Use case: Windows file sharing and network analysis"
+}
+
+add_safe_scripts() {
+    echo "🔧 Adding Safe Scripts Only..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+    nmap_args+=" --script=safe"
+    echo "✅ Added safe, non-intrusive scripts only"
+    echo "🎯 Use case: Information gathering without risk"
+}
+
+add_custom_scripts() {
+    echo "📝 Custom Script Selection"
+    echo "════════════════════════════"
+    echo "Enter specific NSE scripts separated by commas"
+    echo "Examples:"
+    echo "  http-title,ssl-cert,ssh-hostkey"
+    echo "  ftp-anon,telnet-encryption,dns-zone-transfer"
+    echo
+    prompt_input "Enter script names: " custom_scripts
+    if [[ -n "$custom_scripts" ]]; then
+        nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed 's/  / /g')
+        nmap_args+=" --script=$custom_scripts"
+        echo "✅ Added custom scripts: $custom_scripts"
+    else
+        echo "❌ No scripts specified"
+    fi
+}
+
+configure_script_arguments() {
+    echo "⚙️ Script Arguments Configuration"
+    echo "════════════════════════════════════"
+    echo "Set arguments for NSE scripts in key=value format"
+    echo "Examples:"
+    echo "  http.useragent='Mozilla/5.0 Custom'"
+    echo "  brute.threads=5,brute.delay=2s"
+    echo "  http.max-redirect=3"
+    echo
+    prompt_input "Enter script arguments: " script_args
+    if [[ -n "$script_args" ]]; then
+        nmap_args=$(echo "$nmap_args" | sed -E 's/--script-args=[^ ]*//g' | sed 's/  / /g')
+        nmap_args+=" --script-args=$script_args"
+        echo "✅ Added script arguments: $script_args"
+    else
+        echo "❌ No arguments specified"
+    fi
+}
+
+browse_available_scripts() {
+    echo "📖 Browsing Available NSE Scripts..."
+    echo "═══════════════════════════════════════"
+    if command -v locate &> /dev/null; then
+        echo "🔍 Found NSE scripts:"
+        locate "*.nse" | head -20
+        echo "... (showing first 20 results)"
+    elif [ -d "/usr/share/nmap/scripts" ]; then
+        echo "🔍 NSE scripts in /usr/share/nmap/scripts:"
+        ls /usr/share/nmap/scripts/*.nse | head -20
+        echo "... (showing first 20 results)"
+    else
+        echo "❌ Unable to locate NSE scripts directory"
+        echo "💡 Try: nmap --script-help all"
+    fi
+}
+
+search_scripts() {
+    echo "🔍 Script Search"
+    echo "══════════════════"
+    prompt_input "Enter keyword to search for: " keyword
+    if [[ -n "$keyword" ]]; then
+        echo "🔍 Searching for scripts related to: $keyword"
+        nmap --script-help "*$keyword*" 2>/dev/null | head -30
+        echo "... (showing first 30 lines)"
+    else
+        echo "❌ No keyword specified"
+    fi
+}
+
+view_current_scripts() {
+    echo "📋 Current NSE Script Configuration"
+    echo "═══════════════════════════════════════"
+    local current_scripts=$(get_current_nse_scripts)
+    if [[ "$current_scripts" != "None" ]]; then
+        echo "Active scripts: $current_scripts"
+        
+        # Show script arguments if any
+        local script_args=$(echo "$nmap_args" | grep -oE -- "--script-args=[^ ]*" || echo "None")
+        echo "Script arguments: $script_args"
+    else
+        echo "❌ No NSE scripts currently configured"
+        echo "💡 Use the menu options above to add scripts"
+    fi
+}
+
+reset_nse_scripts() {
+    echo "🗑️ Resetting NSE Scripts..."
+    nmap_args=$(echo "$nmap_args" | sed -E 's/--script=[^ ]*//g' | sed -E 's/--script-args=[^ ]*//g' | sed 's/  / /g')
+    echo "✅ All NSE scripts and arguments have been reset"
+}
+
+get_current_nse_scripts() {
+    local scripts=$(echo "$nmap_args" | grep -oE -- "--script=[^ ]*" | sed 's/--script=//')
+    if [[ -n "$scripts" ]]; then
+        echo "$scripts"
+    else
+        echo "None"
+    fi
+}
+
+display_nse_help() {
+    clear
+    echo "🆘 NSE SCRIPT ENGINE HELP"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo
+    echo "📖 WHAT IS NSE?"
+    echo "The Nmap Scripting Engine (NSE) allows you to run custom scripts"
+    echo "during scans for advanced service detection, vulnerability assessment,"
+    echo "and exploitation. Scripts are written in Lua and cover hundreds"
+    echo "of different use cases."
+    echo
+    echo "🎯 SCRIPT CATEGORIES EXPLAINED:"
+    echo
+    echo "🛡️  VULNERABILITY (--script=vuln):"
+    echo "   • Detects known security vulnerabilities"
+    echo "   • Checks for CVEs and security misconfigurations"
+    echo "   • Examples: sql-injection, xss-scanner"
+    echo
+    echo "🔍 DISCOVERY (--script=discovery):"
+    echo "   • Gathers detailed service information"
+    echo "   • Non-intrusive information collection"
+    echo "   • Examples: http-title, ssh-hostkey, dns-zone-transfer"
+    echo
+    echo "🔓 AUTH (--script=auth):"
+    echo "   • Tests authentication mechanisms"
+    echo "   • Checks for anonymous access"
+    echo "   • Examples: ftp-anon, mysql-empty-password"
+    echo
+    echo "💥 BRUTE (--script=brute):"
+    echo "   • Password and credential attacks"
+    echo "   • ⚠️ Can lock accounts - use carefully!"
+    echo "   • Examples: ssh-brute, http-brute"
+    echo
+    echo "🔧 SAFE (--script=safe):"
+    echo "   • Non-intrusive scripts only"
+    echo "   • Won't crash services or trigger alerts"
+    echo "   • Good for production environments"
+    echo
+    echo "⚙️  SCRIPT ARGUMENTS:"
+    echo "Use --script-args to customize script behavior:"
+    echo "   • http.useragent='Custom Agent'"
+    echo "   • brute.threads=10"
+    echo "   • mysql.timeout=5s"
+    echo
+    echo "💡 BEST PRACTICES:"
+    echo "   • Start with 'safe' scripts in production"
+    echo "   • Test scripts in lab environments first"
+    echo "   • Be aware of script impact and timing"
+    echo "   • Some scripts require specific ports to be open"
+    echo
+    read -p "Press Enter to return to NSE menu..."
 }
 
 # Improved Firewall/IDS Evasion Menu
@@ -2817,6 +2845,226 @@ configure_output_options() {
 # SECTION: Main Menu
 # ==========================
 
+# ==========================
+# SECTION: Results Analysis
+# ==========================
+
+# Simple results analysis and reporting
+analyze_scan_results() {
+    while true; do
+        clear
+        echo "📊 SCAN RESULTS ANALYZER"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo
+        echo "📄 ANALYSIS OPTIONS:"
+        echo "1.  📋 Quick Summary          - Parse and summarize recent scan results"
+        echo "2.  🔍 Detailed Analysis      - In-depth examination of scan output"
+        echo "3.  📈 Generate Report        - Create formatted reports (HTML/CSV)"
+        echo "4.  🎯 Find Live Hosts        - Extract and list discovered hosts"
+        echo "5.  🔌 Open Ports Summary     - List all open ports found"
+        echo "6.  🔬 Service Enumeration    - Extract service and version info"
+        echo "7.  🛡️  Security Assessment   - Highlight potential security issues"
+        echo "8.  📊 Statistics Overview    - Scan statistics and metrics"
+        echo "9.  ⬅️  Back to Main Menu"
+        echo
+        echo "═══════════════════════════════════════════════════════════════"
+        read -p "📊 Select analysis option: " analysis_choice
+
+        case $analysis_choice in
+        1)
+            quick_results_summary
+            ;;
+        2)
+            detailed_results_analysis
+            ;;
+        3)
+            generate_custom_report
+            ;;
+        4)
+            extract_live_hosts
+            ;;
+        5)
+            summarize_open_ports
+            ;;
+        6)
+            extract_service_info
+            ;;
+        7)
+            security_assessment
+            ;;
+        8)
+            scan_statistics
+            ;;
+        9)
+            return_to_menu
+            break
+            ;;
+        "-h"|"--help")
+            display_analysis_help
+            ;;
+        *)
+            invalid_input
+            ;;
+        esac
+        read -p "Press Enter to continue..."
+    done
+}
+
+quick_results_summary() {
+    echo "📋 Quick Results Summary"
+    echo "═══════════════════════════════"
+    prompt_input "Enter path to Nmap output file (XML/normal): " results_file
+    
+    if [[ ! -f "$results_file" ]]; then
+        echo "❌ File not found: $results_file"
+        return
+    fi
+    
+    echo "🔍 Analyzing: $results_file"
+    echo
+    
+    # Count hosts
+    if grep -q "Nmap scan report for" "$results_file"; then
+        local host_count=$(grep -c "Nmap scan report for" "$results_file")
+        echo "🖥️  Hosts scanned: $host_count"
+    fi
+    
+    # Count open ports
+    if grep -q "open" "$results_file"; then
+        local open_ports=$(grep -c "/tcp.*open\|/udp.*open" "$results_file")
+        echo "🔌 Open ports found: $open_ports"
+    fi
+    
+    # Find common services
+    echo "🔬 Common services detected:"
+    grep -o "[0-9]*/tcp.*open.*" "$results_file" | head -10 | while read line; do
+        echo "   $line"
+    done
+}
+
+detailed_results_analysis() {
+    echo "🔍 Detailed Results Analysis"
+    echo "═══════════════════════════════════"
+    echo "Feature coming soon: Advanced parsing and analysis"
+    echo "Will include vulnerability mapping, service correlation, etc."
+}
+
+generate_custom_report() {
+    echo "📈 Generate Custom Report"
+    echo "═══════════════════════════════"
+    echo "Feature coming soon: Export to HTML, PDF, CSV formats"
+    echo "Will include executive summaries and technical details"
+}
+
+extract_live_hosts() {
+    echo "🎯 Live Hosts Extraction"
+    echo "═══════════════════════════════"
+    prompt_input "Enter path to Nmap output file: " results_file
+    
+    if [[ ! -f "$results_file" ]]; then
+        echo "❌ File not found: $results_file"
+        return
+    fi
+    
+    echo "🔍 Extracting live hosts from: $results_file"
+    echo
+    echo "📋 Live Hosts Found:"
+    grep "Nmap scan report for" "$results_file" | sed 's/Nmap scan report for //' | while read host; do
+        echo "   ✅ $host"
+    done
+}
+
+summarize_open_ports() {
+    echo "🔌 Open Ports Summary"
+    echo "═══════════════════════════"
+    prompt_input "Enter path to Nmap output file: " results_file
+    
+    if [[ ! -f "$results_file" ]]; then
+        echo "❌ File not found: $results_file"
+        return
+    fi
+    
+    echo "🔍 Analyzing open ports in: $results_file"
+    echo
+    echo "📋 Open Ports by Service:"
+    grep -E "[0-9]+/(tcp|udp).*open" "$results_file" | sort | uniq -c | sort -nr
+}
+
+extract_service_info() {
+    echo "🔬 Service Information Extraction"
+    echo "═══════════════════════════════════════"
+    echo "Feature coming soon: Detailed service enumeration"
+    echo "Will extract versions, banners, and service details"
+}
+
+security_assessment() {
+    echo "🛡️ Security Assessment"
+    echo "═══════════════════════════"
+    echo "Feature coming soon: Automated security analysis"
+    echo "Will highlight potential vulnerabilities and misconfigurations"
+}
+
+scan_statistics() {
+    echo "📊 Scan Statistics"
+    echo "════════════════════"
+    prompt_input "Enter path to Nmap output file: " results_file
+    
+    if [[ ! -f "$results_file" ]]; then
+        echo "❌ File not found: $results_file"
+        return
+    fi
+    
+    echo "📈 Statistics for: $results_file"
+    echo
+    
+    # File size
+    local file_size=$(ls -lh "$results_file" | awk '{print $5}')
+    echo "📄 File size: $file_size"
+    
+    # Scan duration
+    if grep -q "Nmap done" "$results_file"; then
+        local scan_time=$(grep "Nmap done" "$results_file" | grep -o "in [0-9.]* seconds" || echo "Unknown")
+        echo "⏱️  Scan duration: $scan_time"
+    fi
+    
+    # Line count
+    local line_count=$(wc -l < "$results_file")
+    echo "📝 Total lines: $line_count"
+}
+
+display_analysis_help() {
+    clear
+    echo "🆘 RESULTS ANALYSIS HELP"
+    echo "═══════════════════════════════════════════════════════════════"
+    echo
+    echo "📖 ABOUT RESULTS ANALYSIS:"
+    echo "The Results Analyzer helps you parse and understand Nmap scan output."
+    echo "It can process both normal text output and XML formatted results."
+    echo
+    echo "📄 SUPPORTED FILE FORMATS:"
+    echo "• Normal output (-oN): Human-readable text format"
+    echo "• XML output (-oX): Structured XML for automated processing"
+    echo "• Grepable output (-oG): Easy to parse with grep/awk"
+    echo
+    echo "🔍 ANALYSIS FEATURES:"
+    echo "• Host discovery summary"
+    echo "• Open port enumeration" 
+    echo "• Service identification"
+    echo "• Security assessment (coming soon)"
+    echo "• Custom reporting (coming soon)"
+    echo
+    echo "💡 TIPS:"
+    echo "• Use XML output for best analysis results"
+    echo "• Combine with -oA for all output formats"
+    echo "• Save scan results in organized directories"
+    echo
+    read -p "Press Enter to return to analysis menu..."
+}
+
+# ==========================
+# SECTION: Main Menu
+# ==========================
+
 main() {
     # Check for help flag on script invocation
     if [[ "$1" == "-h" || "$1" == "--help" ]]; then
@@ -2828,57 +3076,87 @@ main() {
 
     while true; do
         clear
-        echo "MAIN MENU:"
-        echo "1. Target Specification"
-        echo "2. Host Discovery"
-        echo "3. Scan Techniques"
-        echo "4. Port Specification"
-        echo "5. Service/Version Detection"
-        echo "6. OS Detection"
-        echo "7. Timing and Performance"
-        echo "8. Firewall/IDS Evasion"
-        echo "9. Miscellaneous Options"
-        echo "10. Output Configuration"
-        echo "11. View Current Command"
-        echo "12. Show Active Options"
-        echo "13. Reset Command"
-        echo "14. Run Nmap Scan"
-        echo "15. Exit"
-        echo "Type '-h' or '--help' for help"
-        read -p "Select an option: " main_choice
+        echo "🎯 NMAP ARCHITECT - MAIN MENU"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo
+        echo "🚀 QUICK START:"
+        echo "1.  📋 Scan Templates             - Pre-configured scan setups"
+        echo "2.  🎯 Target Specification       - Define scan targets"
+        echo
+        echo "🔍 DISCOVERY & SCANNING:"
+        echo "3.  📡 Host Discovery             - Find live hosts"
+        echo "4.  🔓 Scan Techniques            - Choose scanning methods"
+        echo "5.  🔌 Port Specification         - Configure port ranges"
+        echo "6.  🔬 Service/Version Detection  - Identify services"
+        echo "7.  🖥️  OS Detection              - Operating system fingerprinting"
+        echo
+        echo "🔬 ADVANCED ANALYSIS:"
+        echo "8.  🧪 NSE Script Engine          - Advanced scripts & vulnerability detection"
+        echo "9.  ⏱️  Timing and Performance     - Speed and stealth options"
+        echo "10. 🛡️  Firewall/IDS Evasion      - Bypass security controls"
+        echo
+        echo "⚙️  CONFIGURATION & OUTPUT:"
+        echo "11. 🔧 Miscellaneous Options      - Additional settings"
+        echo "12. 📄 Output Configuration       - Results and reporting"
+        echo "13. 📊 Analyze Scan Results       - Parse and analyze previous scans"
+        echo
+        echo "📊 COMMAND MANAGEMENT:"
+        echo "14. 👁️  View Current Command       - Show built command"
+        echo "15. 📋 Show Active Options        - Display all configured options"
+        echo "16. 🗑️  Reset Command             - Clear all settings"
+        echo
+        echo "🚀 EXECUTION:"
+        echo "17. ▶️  Run Nmap Scan             - Execute the configured scan"
+        echo "18. ❌ Exit                       - Close Nmap Architect"
+        echo
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "💡 Type '-h' or '--help' for help • 🎯 Start with Templates for quick setup"
+        read -p "🚀 Select your mission: " main_choice
 
         case $main_choice in
         1)
-            configure_target_specification
+            configure_scan_templates
             ;;
         2)
-            configure_host_discovery
+            configure_target_specification
             ;;
         3)
-            configure_scan_techniques
+            configure_host_discovery
             ;;
         4)
-            configure_port_specification
+            configure_scan_techniques
             ;;
         5)
-            configure_service_detection
+            configure_port_specification
             ;;
         6)
-            configure_os_detection
+            configure_service_detection
             ;;
         7)
-            configure_timing_performance
+            configure_os_detection
             ;;
         8)
-            configure_firewall_evasion
+            configure_nse_scripts
             ;;
         9)
-            configure_misc_options
+            configure_timing_performance
             ;;
         10)
-            configure_output_options
+            configure_firewall_evasion
             ;;
         11)
+            configure_misc_options
+            ;;
+        12)
+            configure_output_options
+            ;;
+        12)
+            configure_output_options
+            ;;
+        13)
+            analyze_scan_results
+            ;;
+        14)
             if [[ -z "$nmap_args" ]]; then
             echo "No options selected yet."
             else
@@ -2887,42 +3165,15 @@ main() {
             fi
             read -p "Press Enter to continue..."
             ;;
-            # if [[ -z "$nmap_args" ]]; then
-            #     echo "No options selected yet."
-            # else
-            #     echo "Current Nmap Command: nmap $nmap_args"
-            # fi
-            # read -p "Press Enter to continue..."
-            # ;;
-        12)
+        15)
             show_active_options
             ;;    
-        13)
+        16)
             nmap_args=""
             echo "Command reset successfully."
             read -p "Press Enter to continue..."
             ;;
-        # 14)
-        #     if [[ -z "$nmap_args" ]]; then
-        #         echo "Error: No options selected. Please configure the scan first."
-        #     else
-        #         if [[ ! "$nmap_args" =~ -iL|-iR ]]; then
-        #             prompt_input "Enter target (IP, hostname, or network): " target
-        #             if [[ -n "$target" ]]; then
-        #                 nmap_args+=" $target"
-        #             else
-        #                 echo "Error: Target cannot be empty."
-        #                 read -p "Press Enter to continue..."
-        #                 continue
-        #             fi
-        #         fi
-        #         echo "Running: nmap $nmap_args"
-        #         nmap $nmap_args
-        #         nmap_args=""
-        #     fi
-        #     read -p "Press Enter to continue..."
-        #     ;;
-        14)
+        17)
             if [[ -z "$nmap_args" ]]; then
                 echo "Error: No options selected. Please configure the scan first."
             else
@@ -2952,12 +3203,16 @@ main() {
             fi
             read -p "Press Enter to continue..."
             ;;
-        15)
-            echo "Exiting Nmap Architect. Goodbye!"
+        18)
+            echo "🚀 Thank you for using Nmap Architect!"
+            echo "🛡️  Happy hunting and stay ethical! 🛡️"
             exit 0
             ;;
         "-h"|"--help")
             display_help
+            ;;
+        "tips"|"tip")
+            show_tips
             ;;
         *)
             invalid_input
